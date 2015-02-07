@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="de.hskl.kuro.bluetoothchataa.MainActivity" >
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_settings"/>
+    <item android:id="@+id/MENU_ITEM_CONNECT" android:showAsAction="ifRoom|withText" android:title="Connect"></item>
+    <item android:id="@+id/MENU_ITEM_ACCEPT" android:visible="true" android:title="Accept" android:showAsAction="ifRoom|withText"></item>
+
+</menu>
