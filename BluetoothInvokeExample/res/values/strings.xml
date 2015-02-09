@@ -7,5 +7,6 @@
     <string name="START_DEVICE_CHOICE">Choose between GUI or Compute device.</string>
     <string name="BUTTON_COMPUTE_DEVICE">Compute device</string>
     <string name="BUTTON_GUI_DEVICE">GUI device</string>
+    <string name="title_activity_compute">ComputeActivity</string>
 
 </resources>
