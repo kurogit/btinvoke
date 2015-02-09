@@ -4,5 +4,8 @@
     <string name="app_name">BluetoothInvokeExample</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="START_DEVICE_CHOICE">Choose between GUI or Compute device.</string>
+    <string name="BUTTON_COMPUTE_DEVICE">Compute device</string>
+    <string name="BUTTON_GUI_DEVICE">GUI device</string>
 
 </resources>
