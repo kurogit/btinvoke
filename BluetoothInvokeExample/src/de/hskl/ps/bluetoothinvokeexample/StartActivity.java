@@ -21,7 +21,6 @@ public class StartActivity extends Activity {
     void guiDeviceChosen() {
         BetterLog.i(TAG, "User chose gui device");
         
-        Intent intent = new Intent(this, GUIActivity.class);
-        startActivity(intent);
+        GUIActivity_.intent(this).start();
     }
 }

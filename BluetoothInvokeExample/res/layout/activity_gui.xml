@@ -5,4 +5,11 @@
     android:layout_height="match_parent"
     tools:context="de.hskl.ps.bluetoothinvokeexample.GUIActivity"
     tools:ignore="MergeRootFrame" >
+
+    <fragment
+        android:id="@+id/fragment1"
+        android:name="de.hskl.ps.bluetoothinvokeexample.fragments.BTExampleFragment_"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </FrameLayout>

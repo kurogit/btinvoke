@@ -8,5 +8,7 @@
     <string name="BUTTON_COMPUTE_DEVICE">Compute device</string>
     <string name="BUTTON_GUI_DEVICE">GUI device</string>
     <string name="title_activity_compute">ComputeActivity</string>
+    <string name="BUTTON_REMOTE">Run remote</string>
+    <string name="BUTTON_LOCAL">Run local</string>
 
 </resources>
