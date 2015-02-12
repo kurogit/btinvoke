@@ -15,6 +15,8 @@ public class StartActivity extends Activity {
     @Click(R.id.BUTTON_COMPUTE_DEVICE)
     void computeDeviceChosen() {
         BetterLog.i(TAG, "User chose compute device");
+        
+        ComputeActivity_.intent(this).start();
     }
     
     @Click(R.id.BUTTON_GUI_DEVICE)

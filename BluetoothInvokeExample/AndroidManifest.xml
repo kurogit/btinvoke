@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="de.hskl.ps.bluetoothinvokeexample"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.hskl.ps.bluetoothinvokeexample"
     android:versionCode="1"
-    android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="19"
         android:targetSdkVersion="19" />
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
         android:allowBackup="true"
@@ -17,8 +19,8 @@
         <activity
             android:name=".StartActivity_"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:noHistory="true" >
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,8 +32,14 @@
             android:label="@string/title_activity_compute"
             android:screenOrientation="portrait" >
         </activity>
-        <service
-            android:name=".services.BTInvocationServerService_"/>
+
+        <service android:name=".services.BTInvocationServerService_" />
+        <service android:name=".services.BTInvokeClientService_" />
+
+        <activity
+            android:name=".ComputeActivity_"
+            android:label="@string/title_activity_compute" >
+        </activity>
     </application>
 
 </manifest>

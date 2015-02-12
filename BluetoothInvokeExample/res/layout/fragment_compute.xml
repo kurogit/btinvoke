@@ -25,10 +25,10 @@
         android:layout_gravity="bottom" >
 
         <Button
-            android:id="@+id/BUTTON_REMOTE"
+            android:id="@+id/BUTTON_CONNECT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/BUTTON_REMOTE" />
+            android:text="@string/BUTTON_CONNECT" />
 
         <Button
             android:id="@+id/BUTTON_LOCAL"

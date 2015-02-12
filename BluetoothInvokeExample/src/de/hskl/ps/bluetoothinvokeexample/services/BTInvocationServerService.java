@@ -3,7 +3,6 @@ package de.hskl.ps.bluetoothinvokeexample.services;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EService;
@@ -13,60 +12,59 @@ import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Binder;
+import android.content.IntentFilter;
 import android.os.IBinder;
-import android.widget.Toast;
+import android.support.v4.content.LocalBroadcastManager;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTGlobals;
+import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.IBTConnectionHandler;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.IBTInvocationStatusMessageListener;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.IBTInvocationStatusMessageWriter;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 @EService
-public class BTInvocationServerService extends Service implements IBTInvocationStatusMessageWriter, IBTConnectionHandler {
+public class BTInvocationServerService extends Service implements IBTConnectionHandler {
 
-    public final class BluetoothInvocationBinder extends Binder {
-        public BTInvocationServerService getService() {
-            return BTInvocationServerService.this;
-        }
-    }
-
-    private final String TAG = "BTIServerService";
-
-    private final IBinder binder_ = new BluetoothInvocationBinder();
-    
+    private final String TAG = "BTIServerService";   
 
     private BluetoothAdapter adapter_ = null;
     private BluetoothSocket socket_ = null;
     private InputStream readStream_ = null;
     private OutputStream writeStream_ = null;
     
+    private LocalBroadcastManager broadcast_ = null;
+    
     // IBTConnectionHandler interface
     private ConnectionStatus connectionStatus_ = ConnectionStatus.DISABLED;
     
-    // IBTInvocationStatusMessageWriter
-    private IBTInvocationStatusMessageListener statusMessageListener_ = null;
-    
-    @Override
-    public IBinder onBind(Intent intent) {
-        BetterLog.i(TAG, "Binding with Intent: %s", intent.toString());
+    private BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
         
-        return binder_;
-    }
-
+        @Override
+        public void onReceive(Context context, Intent intent) {
+           if(intent.getAction().equals(BTInvocationMessages.REMOTE_EXECUTE)) {
+               String jsonString = intent.getExtras().getString(BTInvokeExtras.JSONSTRING);
+               
+               sendStringAndWaitForAnswer(jsonString);
+               
+               BetterLog.d(TAG, "I am the service and i recieved: %s", jsonString);
+           }
+        }
+    };
+    
     @Override
     public void onCreate() {
         super.onCreate();
         BetterLog.v(TAG, "onCreate");
         
         adapter_ = BluetoothAdapter.getDefaultAdapter();
-                
-        // Ensure Bluetooth is on
-        if(adapter_ == null || !adapter_.isEnabled()) {
-            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivity(enableBluetooth);
-        }
+        
+        broadcast_ = LocalBroadcastManager.getInstance(this);
+        
+        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_EXECUTE));
+        
+        connect();
     }
 
     @Override
@@ -76,6 +74,8 @@ public class BTInvocationServerService extends Service implements IBTInvocationS
         
         // Stop all threads
         BackgroundExecutor.cancelAll("accept_thread", true);
+        
+        broadcast_.unregisterReceiver(broadCastReciever_);
     }
 
     @Override
@@ -193,13 +193,24 @@ public class BTInvocationServerService extends Service implements IBTInvocationS
         }
     }
     
-    public Object invoke(Object proxy, Method method, Object[] args){
-        // Turn method to Json
-        // Write json string
-        // read (Blocking!) result
-        // turn result json to Object of returntype
-        // return result
-        return null;
+    
+    @Background(id="send_and_wait_thread", serial="send_and_wait_thread")
+    void sendStringAndWaitForAnswer(String s) {
+        try {
+            writeStream_.write(s.getBytes());
+            
+            byte[] buffer = new byte[1024];
+            int readByteCount = readStream_.read(buffer);
+            String recievedString = new String(buffer, 0, readByteCount);
+            
+            Intent intent = new Intent(BTInvocationMessages.REMOTE_EXECUTE_RESULT);
+            intent.putExtra(BTInvokeExtras.JSONSTRING, recievedString);
+            broadcast_.sendBroadcast(intent);
+            
+        } catch(IOException e) {
+           BetterLog.e(TAG, e, "");
+           // TODO
+        }
     }
 
     @Override
@@ -207,14 +218,12 @@ public class BTInvocationServerService extends Service implements IBTInvocationS
         return connectionStatus_;
     }
 
-    @Override
-    public void setStatusMessageListener(IBTInvocationStatusMessageListener l) {
-        statusMessageListener_ = l;        
+    public void postStatusMessage(String msg) {
+        //TODO
     }
 
     @Override
-    public void postStatusMessage(String msg) {
-        if(statusMessageListener_ != null)
-            statusMessageListener_.onStatusMessage(msg);
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 }
