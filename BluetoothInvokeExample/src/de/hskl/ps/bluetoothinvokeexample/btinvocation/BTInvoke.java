@@ -4,6 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeJSONKeys;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 import android.content.Context;
 import android.content.Intent;
@@ -30,17 +33,9 @@ public class BTInvoke {
         // Turn to JSON
         JSONObject j = new JSONObject();
         try {
-            j.put("id", id);
-            j.put("method", methodName);
-            
-            JSONArray params = new JSONArray();
-            for(int i = 0; i < args.length; ++i) {
-                JSONObject param = new JSONObject();
-                param.put("value", args[i]);
-                param.put("type", args[i].getClass().getName());
-                params.put(param);
-            }
-            j.put("params", params);
+            j.put(BTInvokeJSONKeys.ID, id);
+            j.put(BTInvokeJSONKeys.METHOD_NAME, methodName);
+            j.put(BTInvokeJSONKeys.PARAMETERS, new JSONArray(args));
             
         } catch(JSONException e) {
             throw new BTInvocationException("Failed to create JSONObject.");

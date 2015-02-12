@@ -15,4 +15,13 @@ public class GUIActivity extends Activity {
         
         BTInvocationServerService_.intent(this).start();
     }
+    
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        
+        if(isFinishing()) {
+            BTInvocationServerService_.intent(this).stop();
+        }
+    }
 }
