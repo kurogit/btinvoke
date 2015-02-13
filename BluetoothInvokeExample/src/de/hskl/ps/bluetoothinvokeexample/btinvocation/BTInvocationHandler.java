@@ -14,7 +14,8 @@ import org.json.JSONObject;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeErrorValues;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeJSONKeys;
+import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationRequest;
+import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationResult;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -43,22 +44,19 @@ public class BTInvocationHandler implements InvocationHandler {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equalsIgnoreCase(BTInvocationMessages.REMOTE_EXECUTE_RESULT)) {
+            if(intent.getAction().equalsIgnoreCase(BTInvocationMessages.REMOTE_INVOCATION_RESULT)) {
                 String recievedString = intent.getStringExtra(BTInvokeExtras.JSONSTRING);
 
                 try {
-                    JSONObject j = new JSONObject(recievedString);
-                    long id = j.getLong(BTInvokeJSONKeys.ID);
+                    RemoteInvocationResult r = RemoteInvocationResult.fromJSONString(recievedString);
                     
-                    if(id != id_) {
-                        // This is not the result of our original request.
-                        return;
-                    }
+                    result_ = r.result();
                     
-                    result_ = j.get(BTInvokeJSONKeys.RESULT);
                     latch_.countDown();
 
                 } catch(JSONException e) {
+                    BetterLog.e(TAG, e, "Converting result string from JSON failed");
+                    result_ = BTInvokeErrorValues.ERROR_RESULT;
                 }
             }
         }
@@ -70,20 +68,17 @@ public class BTInvocationHandler implements InvocationHandler {
         latch_ = new CountDownLatch(1);
 
         broadcast_ = LocalBroadcastManager.getInstance(context_);
-        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_EXECUTE_RESULT));
+        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_INVOCATION_RESULT));
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
         // Turn method to json
-        JSONObject j = new JSONObject();
-        j.put("id", currentID++);
-        j.put("method", method.getName());
-        j.put("params", new JSONArray(args));
+        JSONObject j = RemoteInvocationRequest.toJsonObject(id_, method.getName(), params);
 
         BetterLog.d(TAG, "Created Json String: %s", j.toString());
         // send to service
-        Intent intent = new Intent(BTInvocationMessages.REMOTE_EXECUTE);
+        Intent intent = new Intent(BTInvocationMessages.REMOTE_INVOCATION);
         intent.putExtra(BTInvokeExtras.JSONSTRING, j.toString());
         broadcast_.sendBroadcast(intent);
 

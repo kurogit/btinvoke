@@ -1,5 +1,6 @@
 package de.hskl.ps.bluetoothinvokeexample.btinvocation;
 
+
 public class BTInvocationException extends Exception {
 
     private static final long serialVersionUID = 2864705623960965359L;
@@ -10,5 +11,9 @@ public class BTInvocationException extends Exception {
     
     public BTInvocationException(Throwable t) {
         super(t);
+    }
+
+    public BTInvocationException(String what, Throwable e) {
+        super(what, e);
     }
 }

@@ -18,7 +18,8 @@ import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnection.Status;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvokeMethodManager;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.MethodCallException;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeErrorValues;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeJSONKeys;
+import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationRequest;
+import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationResult;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 /**
@@ -75,19 +76,10 @@ public class BTInvokeClientService extends Service {
                 // If reading fails we can't really send an answer
                 continue;
             }
-            
-            long id = -1;
-            String methodName = null;
-            Object[] params = null;
+
+            RemoteInvocationRequest r = null;
             try {
-                JSONObject r = new JSONObject(recievedString);
-                id = r.getInt(BTInvokeJSONKeys.ID);
-                methodName = r.getString(BTInvokeJSONKeys.METHOD_NAME);
-                JSONArray a = r.getJSONArray(BTInvokeJSONKeys.PARAMETERS);
-                params = new Object[a.length()];
-                for(int i = 0; i < a.length(); ++i) {
-                    params[i] = a.get(i);
-                }
+                r = RemoteInvocationRequest.fromJSONString(recievedString);
             } catch(JSONException e) {
                 BetterLog.e(TAG, e, "Exception while converting incoming JSON");
                 // We cant get to the id and method anymore.
@@ -96,17 +88,16 @@ public class BTInvokeClientService extends Service {
 
             Object result = null;
             try {
-                result = BTInvokeMethodManager.getInstance().callMethod(methodName, params);
+                result = BTInvokeMethodManager.getInstance().callMethod(r.methodName(), r.methodParams());
             } catch(MethodCallException e) {
                 BetterLog.e(TAG, e, "Exception while calling method");
                 result = BTInvokeErrorValues.ERROR_RESULT;
             }
 
             // Create result string
-            JSONObject j = new JSONObject();
+            JSONObject j = null;
             try {
-                j.put(BTInvokeJSONKeys.ID, id);
-                j.put(BTInvokeJSONKeys.RESULT, result);
+                j = RemoteInvocationResult.toJSONObject(r.id(), result);
             } catch(JSONException e1) {
                 BetterLog.e(TAG, "Exception while creating answer JSON");
                 // If this fails we can't do anything

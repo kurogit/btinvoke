@@ -38,7 +38,8 @@
 
         <activity
             android:name=".ComputeActivity_"
-            android:label="@string/title_activity_compute" >
+            android:label="@string/title_activity_compute"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 
