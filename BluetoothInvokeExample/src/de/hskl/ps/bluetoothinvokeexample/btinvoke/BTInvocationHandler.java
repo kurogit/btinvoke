@@ -18,7 +18,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTInvocationException;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationRequest;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationResult;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeError;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 @EBean

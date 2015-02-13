@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeError;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMethodManager;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTClientConnection;
@@ -22,7 +23,6 @@ import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTConnectionExcepti
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.MethodCallException;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationRequest;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationResult;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeError;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 /**
