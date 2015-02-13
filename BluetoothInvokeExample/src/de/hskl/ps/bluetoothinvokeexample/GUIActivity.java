@@ -10,13 +10,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationException;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationHandler;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvoke;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
-import de.hskl.ps.bluetoothinvokeexample.example.ICollatzLength;
-import de.hskl.ps.bluetoothinvokeexample.services.BTInvocationServerService_;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,6 +20,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationException;
+import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationHandler;
+import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvoke;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
+import de.hskl.ps.bluetoothinvokeexample.example.ICollatzLength;
+import de.hskl.ps.bluetoothinvokeexample.services.BTInvocationServerService_;
 
 @EActivity(R.layout.activity_gui)
 public class GUIActivity extends Activity {
@@ -103,14 +103,7 @@ public class GUIActivity extends Activity {
         final String exampleMethod = "lengthOfHailstoneSequence";
         final long exampleArg = 1000000;
 
-        // final String exampleMethod = "sleepForSecondsAndReturn";
-        // final int exampleArg1 = 3;
-        // final double exampleArg2 = 4.20;
-
-        // final String msg = String.format("Sending new Request: %s (%d, %f)",
-        // exampleMethod, exampleArg1, exampleArg2);
-        final String msg = String.format("Sending new Request: %s (%d)", exampleMethod, exampleArg);
-        addLogEntry(msg);
+        addLogEntry(String.format("Sending new Request: %s (%d)", exampleMethod, exampleArg));
 
         try {
             BTInvoke.remoteExecute(this, exampleMethod, exampleArg);
@@ -119,13 +112,13 @@ public class GUIActivity extends Activity {
             return;
         }
     }
-    
+
     @Click(R.id.BUTTON_SLEEP)
     void runSleepExample() {
         final String exampleMethod = "sleepForSecondsAndReturn";
         final int exampleArg1 = 3;
         final double exampleArg2 = 4.20;
-        
+
         addLogEntry(String.format("Sending new Request: %s(%d, %f)", exampleMethod, exampleArg1, exampleArg2));
         try {
             BTInvoke.remoteExecute(this, exampleMethod, exampleArg1, exampleArg2);
@@ -134,7 +127,7 @@ public class GUIActivity extends Activity {
             return;
         }
     }
-    
+
     @Click(R.id.BUTTON_PROXY)
     @Background
     void proxyMethod() {
