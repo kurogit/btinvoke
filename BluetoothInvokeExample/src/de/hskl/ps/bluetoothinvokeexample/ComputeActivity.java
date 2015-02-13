@@ -91,14 +91,6 @@ public class ComputeActivity extends Activity {
     @Click(R.id.BUTTON_CONNECT)
     void onConnectClicked() {
 
-        try {
-            String json = "{\"id\":0,\"method\":\"lengthOfHailstoneSequence\",\"params\":[{\"type\":\"java.lang.Integer\",\"value\":1000}]}";
-
-            Object r = BTInvokeMethodManager.getInstance().callMethodFromJSON(json);
-            addLogEntry("Result is: " + r);
-        } catch(MethodCallException e) {
-            BetterLog.e("bla", e, "Could not call method!");
-        }
     }
 
     private final BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
