@@ -88,7 +88,6 @@ public class BTInvocationHandler implements InvocationHandler {
         broadcast_.sendBroadcast(intent);
 
         // wait for result
-        // TODO: Timeout
         boolean latchResult = latch_.await(10, TimeUnit.SECONDS);
 
         broadcast_.unregisterReceiver(broadCastReciever_);
@@ -99,7 +98,7 @@ public class BTInvocationHandler implements InvocationHandler {
         
         // Check if we received an Error
         if(result_.equals(BTInvokeErrorValues.ERROR_RESULT)) {
-            throw new BTInvocationException("Error on compute device. Check the logs for more info.");
+            throw new BTInvocationException("Error on compute device. Check the logs on the compute device for more info.");
         }
 
         return result_;
