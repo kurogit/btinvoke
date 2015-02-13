@@ -18,7 +18,7 @@ public interface ISleeper {
      *            How long to sleep in seconds.
      * @param d
      *            Double to return after sleeping.
-     * @return @{code d}
+     * @return {@code d}
      * @throws InterruptedException
      *             If the sleeping was Interupted.
      */
