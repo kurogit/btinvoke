@@ -10,42 +10,53 @@ import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTInvocationExcepti
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationRequest;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
-public class BTInvoke {
-    
+/**
+ * Class contains a Method for starting an remote invocation on the server side.
+ * 
+ * @author Patrick Schwartz
+ * @date 2015
+ */
+public final class BTInvoke {
+
     private static final String TAG = BTInvoke.class.getSimpleName();
-    
+
     private static long currentID = 0;
-    
+
     /**
-     * Execute the Method with the given name on a client device. This is an
-     * asynchronous Operation. This Method will return immediately.
+     * Execute the Method with the given name on a client device. This is an asynchronous Operation.
+     * This Method will return immediately.
      * 
-     * @param context An Android {@link Context}. Needed for sending a Message to the Service.
-     * @param methodName Name of the Method to execute.
-     * @param args Arguments of the Methods. In the current version only primitive Types + String are supported.
+     * @param context
+     *            An Android {@link Context}. Needed for sending a message to the Service.
+     * @param methodName
+     *            Name of the Method to execute.
+     * @param args
+     *            Arguments of the Methods. In the current version only primitive Types + String are
+     *            supported.
      * @return Id of the Operation. Can be used to find the correct Result.
-     * @throws BTInvocationException 
+     * @throws BTInvocationException
+     *             If an Error on the server side happend.
      */
     public static long remoteExecute(Context context, String methodName, Object... args) throws BTInvocationException {
         long id = currentID++;
-                
+
         JSONObject j = null;
         try {
             j = RemoteInvocationRequest.toJsonObject(id, methodName, args);
         } catch(JSONException e) {
             throw new BTInvocationException("Failed to convert to JSON", e);
         }
-        
+
         String s = j.toString();
         BetterLog.d(TAG, "Created Json String: %s", s);
-        
+
         LocalBroadcastManager b = LocalBroadcastManager.getInstance(context);
-        
+
         // Send Message
         Intent intent = new Intent(BTInvokeMessages.REMOTE_INVOCATION);
         intent.putExtra(BTInvokeMessages.Extras.JSONSTRING, s);
         b.sendBroadcast(intent);
-                
+
         return id;
     }
 

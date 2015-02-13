@@ -13,9 +13,14 @@ import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.MethodCallException
  * Before a method can be invoked with BTInvoke a Interface containing the Method and a Class
  * implementing the Interface have to be registered.
  * <p>
- * <b>Limitations:</b> A method that should be callable can not be overloaded in the interface or
- * implementing class. Will also not work correctly if multiple interfaces with methods with same
- * names were registered.
+ * <b>Limitations:</b><br>
+ * <ul>
+ * <li>A method that should be callable can not be overloaded in the interface or implementing
+ * class.
+ * <li>Will also not work correctly if multiple interfaces with methods with same names were
+ * registered.
+ * <li>Only Methods with Parameters and return types of primitives types + String are supported.
+ * </ul>
  * <p>
  * This class is a Singleton.
  * 
@@ -72,7 +77,7 @@ public class BTInvokeMethodManager {
      * @throws MethodCallException
      *             If the Method was not callable. Reasons this can happen include things such as:<br>
      *             <ul>
-     *             <li> Method was not found. <li> Incorrect number of Parameters. <li> Incorrect
+     *             <li> Method was not found. <li> Incorrect number of parameters. <li> Incorrect
      *             type of Parameters.
      *             </ul>
      */
