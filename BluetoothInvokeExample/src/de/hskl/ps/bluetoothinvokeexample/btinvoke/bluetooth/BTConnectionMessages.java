@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.bluetooth.copy;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth;
 
 import android.content.Intent;
 

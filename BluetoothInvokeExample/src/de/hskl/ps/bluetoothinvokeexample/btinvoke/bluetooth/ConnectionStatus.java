@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.bluetooth.copy;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth;
 
 /** Connection status */
 public enum ConnectionStatus {

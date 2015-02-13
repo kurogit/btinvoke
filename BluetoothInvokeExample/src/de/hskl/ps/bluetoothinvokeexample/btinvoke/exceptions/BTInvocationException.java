@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.btinvocation;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions;
 
 
 public class BTInvocationException extends Exception {

@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.btinvocation;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -6,9 +6,8 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
-import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationRequest;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTInvocationException;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationRequest;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 public class BTInvoke {
@@ -44,7 +43,7 @@ public class BTInvoke {
         
         // Send Message
         Intent intent = new Intent(BTInvokeMessages.REMOTE_INVOCATION);
-        intent.putExtra(BTInvokeExtras.JSONSTRING, s);
+        intent.putExtra(BTInvokeMessages.Extras.JSONSTRING, s);
         b.sendBroadcast(intent);
                 
         return id;

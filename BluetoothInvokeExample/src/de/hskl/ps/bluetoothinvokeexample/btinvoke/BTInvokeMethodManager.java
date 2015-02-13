@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.btinvocation;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -8,6 +8,8 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.MethodCallException;
 
 public class BTInvokeMethodManager {
     

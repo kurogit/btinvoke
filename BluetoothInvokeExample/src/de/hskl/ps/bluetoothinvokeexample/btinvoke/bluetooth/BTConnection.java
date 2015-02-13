@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.bluetooth.copy;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,8 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTConnectionException;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 /**

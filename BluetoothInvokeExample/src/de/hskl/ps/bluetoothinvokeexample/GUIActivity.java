@@ -21,15 +21,14 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionMessages;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationException;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationHandler;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvoke;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvocationHandler;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvoke;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnectionMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTInvocationException;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationResult;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvocationServerService_;
 import de.hskl.ps.bluetoothinvokeexample.example.ICollatzLength;
-import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationResult;
-import de.hskl.ps.bluetoothinvokeexample.services.BTInvocationServerService_;
 
 @EActivity(R.layout.activity_gui)
 public class GUIActivity extends Activity {
@@ -134,7 +133,7 @@ public class GUIActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(BTInvokeMessages.REMOTE_INVOCATION_RESULT)) {
-                String recievedString = intent.getStringExtra(BTInvokeExtras.JSONSTRING);
+                String recievedString = intent.getStringExtra(BTInvokeMessages.Extras.JSONSTRING);
                 
                 RemoteInvocationResult r = null;
                 try {

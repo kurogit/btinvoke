@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.bluetooth.copy;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth;
 
 import java.io.IOException;
 
@@ -8,7 +8,6 @@ import org.androidannotations.api.BackgroundExecutor;
 
 import android.bluetooth.BluetoothServerSocket;
 import android.content.Context;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTGlobals;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 @EBean
@@ -34,7 +33,7 @@ public class BTServerConnection extends BTConnection {
         changeStatus(ConnectionStatus.ACCEPTING);
         BluetoothServerSocket bss = null;
         try {
-            bss = adapter_.listenUsingRfcommWithServiceRecord(BTGlobals.APP_BT_SERVICE_NAME, BTGlobals.APP_BT_UUID);
+            bss = adapter_.listenUsingRfcommWithServiceRecord(BTConnectionParameters.APP_BT_SERVICE_NAME, BTConnectionParameters.APP_BT_UUID);
         } catch(IOException e) {
             BetterLog.e(TAG, e, "Could not create BluetoothServerSocket");
             reportConnectionFailed();

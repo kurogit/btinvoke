@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.bluetooth;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions;
 
 public class BTConnectionException extends Exception {
     public BTConnectionException(String what) {

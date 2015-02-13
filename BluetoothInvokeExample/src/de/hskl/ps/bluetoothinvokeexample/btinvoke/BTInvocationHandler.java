@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.btinvocation;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -7,21 +7,19 @@ import java.util.concurrent.TimeUnit;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeErrorValues;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
-import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationRequest;
-import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationResult;
-import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTInvocationException;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationRequest;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationResult;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeError;
+import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 @EBean
 public class BTInvocationHandler implements InvocationHandler {
@@ -45,7 +43,7 @@ public class BTInvocationHandler implements InvocationHandler {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equalsIgnoreCase(BTInvokeMessages.REMOTE_INVOCATION_RESULT)) {
-                String recievedString = intent.getStringExtra(BTInvokeExtras.JSONSTRING);
+                String recievedString = intent.getStringExtra(BTInvokeMessages.Extras.JSONSTRING);
 
                 try {
                     RemoteInvocationResult r = RemoteInvocationResult.fromJSONString(recievedString);
@@ -56,7 +54,7 @@ public class BTInvocationHandler implements InvocationHandler {
 
                 } catch(JSONException e) {
                     BetterLog.e(TAG, e, "Converting result string from JSON failed");
-                    result_ = BTInvokeErrorValues.ERROR_RESULT;
+                    result_ = BTInvokeError.ERROR_RESULT;
                 }
             }
         }
@@ -79,7 +77,7 @@ public class BTInvocationHandler implements InvocationHandler {
         BetterLog.d(TAG, "Created Json String: %s", j.toString());
         // send to service
         Intent intent = new Intent(BTInvokeMessages.REMOTE_INVOCATION);
-        intent.putExtra(BTInvokeExtras.JSONSTRING, j.toString());
+        intent.putExtra(BTInvokeMessages.Extras.JSONSTRING, j.toString());
         broadcast_.sendBroadcast(intent);
 
         // wait for result
@@ -92,7 +90,7 @@ public class BTInvocationHandler implements InvocationHandler {
             throw new BTInvocationException("Timeout on anwser");
         
         // Check if we received an Error
-        if(result_.equals(BTInvokeErrorValues.ERROR_RESULT)) {
+        if(result_.equals(BTInvokeError.ERROR_RESULT)) {
             throw new BTInvocationException("Error on compute device. Check the logs on the compute device for more info.");
         }
 

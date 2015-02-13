@@ -18,16 +18,16 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionMessages;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvokeMethodManager;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMethodManager;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnectionMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvocationServerService_;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvokeClientService;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvokeClientService_;
 import de.hskl.ps.bluetoothinvokeexample.example.CollatzLength;
 import de.hskl.ps.bluetoothinvokeexample.example.DoubleSleeper;
 import de.hskl.ps.bluetoothinvokeexample.example.ICollatzLength;
 import de.hskl.ps.bluetoothinvokeexample.example.ISleeper;
-import de.hskl.ps.bluetoothinvokeexample.services.BTInvocationServerService_;
-import de.hskl.ps.bluetoothinvokeexample.services.BTInvokeClientService;
-import de.hskl.ps.bluetoothinvokeexample.services.BTInvokeClientService_;
 
 @EActivity(R.layout.activity_compute)
 public class ComputeActivity extends Activity {

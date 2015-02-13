@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.helper;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke.helper;
 
 import org.json.JSONArray;
 import org.json.JSONException;

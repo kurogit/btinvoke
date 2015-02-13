@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.services;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke.services;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
@@ -13,16 +13,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTClientConnection;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionException;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionMessages;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.ConnectionStatus;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvokeMethodManager;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.MethodCallException;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeErrorValues;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
-import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationRequest;
-import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationResult;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMethodManager;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTClientConnection;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnectionMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.ConnectionStatus;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTConnectionException;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.MethodCallException;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationRequest;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationResult;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeError;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 /**
@@ -111,7 +111,7 @@ public class BTInvokeClientService extends Service {
                 result = BTInvokeMethodManager.getInstance().callMethod(r.methodName(), r.methodParams());
             } catch(MethodCallException e) {
                 BetterLog.e(TAG, e, "Exception while calling method");
-                result = BTInvokeErrorValues.ERROR_RESULT;
+                result = BTInvokeError.ERROR_RESULT;
                 sendStatusMessage(BTInvokeMessages.Errors.CALLING_METHOD_FAILED);
             }
             

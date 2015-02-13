@@ -1,4 +1,4 @@
-package de.hskl.ps.bluetoothinvokeexample.constants;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke;
 
 import android.content.Intent;
 

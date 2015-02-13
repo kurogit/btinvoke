@@ -1,11 +1,8 @@
-package de.hskl.ps.bluetoothinvokeexample.services;
-
-import java.io.IOException;
+package de.hskl.ps.bluetoothinvokeexample.btinvoke.services;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EService;
-import org.json.JSONException;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -14,12 +11,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnection;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionException;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTServerConnection;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
-import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationResult;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTServerConnection;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTConnectionException;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 @EService
@@ -75,7 +69,7 @@ public class BTInvocationServerService extends Service {
             sendStatusMessage(BTInvokeMessages.Status.RECIEVED_RESULT);
             
             Intent intent = new Intent(BTInvokeMessages.REMOTE_INVOCATION_RESULT);
-            intent.putExtra(BTInvokeExtras.JSONSTRING, recievedString);
+            intent.putExtra(BTInvokeMessages.Extras.JSONSTRING, recievedString);
             broadcast_.sendBroadcast(intent);
 
         } catch(BTConnectionException e) {
@@ -97,7 +91,7 @@ public class BTInvocationServerService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(BTInvokeMessages.REMOTE_INVOCATION)) {
-                String jsonString = intent.getExtras().getString(BTInvokeExtras.JSONSTRING);
+                String jsonString = intent.getExtras().getString(BTInvokeMessages.Extras.JSONSTRING);
                                 
                 sendStringAndWaitForAnswer(jsonString);
             }

@@ -32,15 +32,14 @@
             android:label="@string/title_activity_compute"
             android:screenOrientation="portrait" >
         </activity>
-
-        <service android:name=".services.BTInvocationServerService_" />
-        <service android:name=".services.BTInvokeClientService_" />
-
         <activity
             android:name=".ComputeActivity_"
             android:label="@string/title_activity_compute"
             android:screenOrientation="portrait" >
         </activity>
+
+        <service android:name="de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvocationServerService_" />
+        <service android:name="de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvokeClientService_" />
     </application>
 
 </manifest>
