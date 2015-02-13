@@ -3,6 +3,7 @@ package de.hskl.ps.bluetoothinvokeexample.btinvocation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
@@ -11,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeErrorValues;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeJSONKeys;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
@@ -30,6 +32,7 @@ public class BTInvocationHandler implements InvocationHandler {
     @RootContext
     Context context_;
 
+    private long id_ = -1;
     private Object result_ = null;
 
     private CountDownLatch latch_ = null;
@@ -45,6 +48,13 @@ public class BTInvocationHandler implements InvocationHandler {
 
                 try {
                     JSONObject j = new JSONObject(recievedString);
+                    long id = j.getLong(BTInvokeJSONKeys.ID);
+                    
+                    if(id != id_) {
+                        // This is not the result of our original request.
+                        return;
+                    }
+                    
                     result_ = j.get(BTInvokeJSONKeys.RESULT);
                     latch_.countDown();
 
@@ -55,6 +65,8 @@ public class BTInvocationHandler implements InvocationHandler {
     };
 
     public BTInvocationHandler() {
+        id_ = currentID++;
+        
         latch_ = new CountDownLatch(1);
 
         broadcast_ = LocalBroadcastManager.getInstance(context_);
@@ -76,9 +88,19 @@ public class BTInvocationHandler implements InvocationHandler {
         broadcast_.sendBroadcast(intent);
 
         // wait for result
-        latch_.await();
+        // TODO: Timeout
+        boolean latchResult = latch_.await(10, TimeUnit.SECONDS);
 
         broadcast_.unregisterReceiver(broadCastReciever_);
+        
+        // Check if Latch failed or timed out
+        if(!latchResult)
+            throw new BTInvocationException("Timeout on anwser");
+        
+        // Check if we received an Error
+        if(result_.equals(BTInvokeErrorValues.ERROR_RESULT)) {
+            throw new BTInvocationException("Error on compute device. Check the logs for more info.");
+        }
 
         return result_;
     }
