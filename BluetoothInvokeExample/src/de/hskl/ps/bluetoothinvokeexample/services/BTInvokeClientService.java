@@ -10,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
@@ -58,6 +60,13 @@ public class BTInvokeClientService extends Service {
 
         connection_.connectAsClient();
         readLoop();
+    }
+    
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        
+        connection_.destroy();
     }
 
     @Background(id = "read_thread", serial = "read_thread")
@@ -114,4 +123,12 @@ public class BTInvokeClientService extends Service {
 
         }
     }
+    
+    private final BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
+        
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            
+        }
+    };
 }

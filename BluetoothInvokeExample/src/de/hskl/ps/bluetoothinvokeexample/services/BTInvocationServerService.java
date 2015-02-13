@@ -56,6 +56,7 @@ public class BTInvocationServerService extends Service {
         BetterLog.v(TAG, "onDestroy");
 
         broadcast_.unregisterReceiver(broadCastReciever_);
+        connection_.destroy();
     }
 
     @Background(id = "send_and_wait_thread", serial = "send_and_wait_thread")
