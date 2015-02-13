@@ -1,20 +1,22 @@
 package de.hskl.ps.bluetoothinvokeexample.services;
 
-import java.io.IOException;
-
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EService;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnection;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnection.Status;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTClientConnection;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionException;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionMessages;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.ConnectionStatus;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvokeMethodManager;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.MethodCallException;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeErrorValues;
@@ -32,16 +34,25 @@ import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 @EService
 public class BTInvokeClientService extends Service {
 
+    public static final String ACTION_CONNECT = "ACTION_CONNECT";
+
     /** Tag for Logging */
     private static final String TAG = BTInvokeClientService.class.getSimpleName();
 
     private LocalBroadcastManager broadcast_ = null;
 
     @Bean
-    BTConnection connection_;
+    BTClientConnection connection_;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent != null) {
+            String action = intent.getAction();
+            if(action != null && action.equalsIgnoreCase(ACTION_CONNECT)) {
+                connection_.connect();
+            }
+        }
+
         return START_NOT_STICKY;
     }
 
@@ -56,22 +67,27 @@ public class BTInvokeClientService extends Service {
 
         broadcast_ = LocalBroadcastManager.getInstance(this);
 
-        connection_.connectAsClient();
-        readLoop();
+        // We need to listen to the connected message before we can start the
+        // loop
+        broadcast_.registerReceiver(broadcastReciever_, new IntentFilter(BTConnectionMessages.CONNECTION_STATUS_MESSAGE));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        broadcast_.unregisterReceiver(broadcastReciever_);
+
+        connection_.destroy();
     }
 
     @Background(id = "read_thread", serial = "read_thread")
     void readLoop() {
-        while(true) {
-            if(connection_.status() != Status.CONNECTED) {
-                // FIXME: Bad!
-                continue;
-            }
-
+        while(connection_.isConnected()) {
             String recievedString = null;
             try {
                 recievedString = connection_.readString();
-            } catch(IOException e) {
+            } catch(BTConnectionException e) {
                 BetterLog.e(TAG, e, "Exception while reading");
                 // If reading fails we can't really send an answer
                 continue;
@@ -106,7 +122,7 @@ public class BTInvokeClientService extends Service {
 
             try {
                 connection_.writeString(j.toString());
-            } catch(IOException e) {
+            } catch(BTConnectionException e) {
                 BetterLog.e(TAG, e, "Exception while writing");
                 // If writing does not work we can't send the answer.
                 continue;
@@ -114,4 +130,19 @@ public class BTInvokeClientService extends Service {
 
         }
     }
+
+    private final BroadcastReceiver broadcastReciever_ = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(BTConnectionMessages.CONNECTION_STATUS_MESSAGE)) {
+                
+                int type = intent.getIntExtra(BTConnectionMessages.EXTRA_TYPE, -255);
+                if(type == ConnectionStatus.CONNECTED.ordinal()) {
+                    // We are connected. Start the readLoop.
+                    readLoop();
+                }
+            }
+        }
+    };
 }

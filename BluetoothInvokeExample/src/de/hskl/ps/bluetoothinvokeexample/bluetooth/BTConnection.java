@@ -3,23 +3,14 @@ package de.hskl.ps.bluetoothinvokeexample.bluetooth;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Set;
-
-import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.api.BackgroundExecutor;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import de.hskl.ps.bluetoothinvokeexample.R;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTGlobals;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
@@ -30,22 +21,17 @@ import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
  * @author Patrick Schwartz
  *
  */
-@EBean
-public class BTConnection {
-
-    /** Connection status */
-    public enum Status {
-        DISABLED, NOT_CONNECTED, ACCEPTING, CONNECTING, CONNECTED
-    }
+public abstract class BTConnection {
 
     private static final String TAG = BTConnection.class.getSimpleName();
 
-    private Status status_ = Status.DISABLED;
-
-    private BluetoothAdapter adapter_ = null;
-    private BluetoothSocket socket_ = null;
-    private InputStream readStream_ = null;
-    private OutputStream writeStream_ = null;
+    
+    protected BluetoothAdapter adapter_ = null;
+    protected BluetoothSocket socket_ = null;
+    protected InputStream readStream_ = null;
+    protected OutputStream writeStream_ = null;
+    
+    private ConnectionStatus status_ = ConnectionStatus.DISABLED;
     private byte[] readBuffer_ = null;
     
     
@@ -60,7 +46,7 @@ public class BTConnection {
         broadcast_ = LocalBroadcastManager.getInstance(c);
 
         if(adapter_.isEnabled())
-            status_ = Status.NOT_CONNECTED;
+            changeStatus(ConnectionStatus.NOT_CONNECTED);
         
         // Listen for BluetoothAdapter changes
         context_.registerReceiver(broadcastReciever_, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
@@ -70,25 +56,32 @@ public class BTConnection {
 
     public void destroy() {
         cancelConnection();
-        cancelThreads();
+        cancelThread();
         context_.unregisterReceiver(broadcastReciever_);
     }
-
-    /** Returns the current connection status */
-    public Status status() {
-        return status_;
-    }
     
-    public boolean isConnected() {
-        return status_ == Status.CONNECTED;
-    }
-    
-    public void writeString(String s) throws IOException {
-        if(status_ != Status.CONNECTED) {
-            final String msg = "Bluetooth ist not connected!";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
+    public void connect() {
+        if(status() == ConnectionStatus.DISABLED) {
+            BetterLog.i(TAG, "Bluetooth is disabled!");
+            reportError(BTConnectionMessages.Errors.BLUETOOTH_DISABLED);
             return;
+        }
+
+        if(status() == ConnectionStatus.CONNECTED) {
+            BetterLog.i(TAG, "There is already a connection present!");
+            reportError(BTConnectionMessages.Errors.ALREADY_CONNECTED);
+            return;
+        }
+        
+        // Let subclass handle the rest
+        doConnect();
+    }
+        
+    public void writeString(String s) throws BTConnectionException {
+        if(status_ != ConnectionStatus.CONNECTED) {
+            BetterLog.i(TAG, "Bluetooth ist not connected!");
+            reportError(BTConnectionMessages.Errors.NOT_CONNECTED);
+            throw new BTConnectionException("Bluetooth is not connected!");
         }
         
         try {
@@ -96,16 +89,15 @@ public class BTConnection {
         } catch(IOException e) {
             // socket is somehow closed
             cancelConnection();
-            throw e;
+            throw new BTConnectionException("Socket was closed", e);
         }
     }
     
-    public String readString() throws IOException {
-        if(status_ != Status.CONNECTED) {
-            final String msg = "Bluetooth ist not connected!";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
-            return null;
+    public String readString() throws BTConnectionException {
+        if(status_ != ConnectionStatus.CONNECTED) {
+            BetterLog.i(TAG, "Bluetooth ist not connected!");
+            reportError(BTConnectionMessages.Errors.NOT_CONNECTED);
+            throw new BTConnectionException("Bluetooth not connected");
         }
         
         try {            
@@ -116,173 +108,18 @@ public class BTConnection {
         } catch(IOException e) {
             // socket is somehow closed
             cancelConnection();
-            throw e;
+            throw new BTConnectionException("Socket was closed", e);
         }
     }
     
-    @Background(id = "accept_thread", serial = "accept_thread")
-    public void acceptConnection() {
-        
-        if(status_ == Status.DISABLED) {
-            final String msg = "Bluetooth is disabled!";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
-            return;
-        }
-        
-        if(status_ == Status.ACCEPTING) {
-            final String msg = "Bluetooth is currently still connecting!";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
-            return;
-        }
-        
-        if(status_ == Status.CONNECTED) {
-            final String msg = "There is already a connection present!";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
-            return;
-        }
-        
-        status_ = Status.ACCEPTING;
-        BluetoothServerSocket bss = null;
-        try {
-            bss = adapter_.listenUsingRfcommWithServiceRecord(BTGlobals.APP_BT_SERVICE_NAME, BTGlobals.APP_BT_UUID);
-        } catch(IOException e) {
-            final String msg = "Could not create BluetoothServerSocket";
-            BetterLog.e(TAG, e, msg);
-            postStatusMessage(msg);
-            cancelConnection();
-            return;
-        }
-
-        // Act as server and accept a connection.
-        try {
-            BetterLog.i(TAG, "Accepting Connections");
-            postStatusMessage("Accepting Bluetooth Connections");
-            socket_ = bss.accept();
-        } catch(IOException e) {
-            final String msg = "Accepting Bluetooth connection failed";
-            BetterLog.e(TAG, e, msg);
-            postStatusMessage(msg);
-            cancelConnection();
-            return;
-        }
-
-        // Open input and output streams
-        if(socket_ != null) {
-            try {
-                readStream_ = socket_.getInputStream();
-                writeStream_ = socket_.getOutputStream();
-            } catch(IOException e) {
-                final String msg = "Unable to open stream";
-                BetterLog.e(TAG, e, msg);
-                postStatusMessage(msg);
-                // We cant do our work now
-                cancelConnection();
-                return;
-            }
-            BetterLog.i(TAG, "Succesfully established connection to %s", socket_.getRemoteDevice().getName());
-            postStatusMessage("Established Connection to" + socket_.getRemoteDevice().getName());
-            status_ = Status.CONNECTED;
-
-            try {
-                bss.close();
-            } catch(IOException e) {
-                BetterLog.e(TAG, e, "Unable to close BluetoothServerSocket");
-                // This is weird, but no need to post it
-            }
-        }
-    }
-
-    @Background(id="connect_thread", serial="connect_thread")
-    public void connectAsClient() {
-        
-        if(status_ == Status.DISABLED) {
-            final String msg = "Bluetooth is disabled!";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
-            return;
-        }
-        
-        if(status_ == Status.CONNECTING) {
-            final String msg = "Bluetooth is currently still connecting!";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
-            return;
-        }
-        
-        if(status_ == Status.CONNECTED) {
-            final String msg = "There is already a connection present!";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
-            return;
-        }
-        
-        // Discovery is expensive and interferes with the connection.
-        adapter_.cancelDiscovery();
-
-        Set<BluetoothDevice> devices = adapter_.getBondedDevices();
-        if(devices.isEmpty()) {
-            final String msg = context_.getResources().getString(R.string.NO_BONDED_DEVICES);
-            BetterLog.d(TAG, msg);
-            postStatusMessage(msg);
-            return;
-        }
-
-        for(BluetoothDevice device : devices) {
-            status_ = Status.CONNECTING;
-            try {
-                socket_ = device.createRfcommSocketToServiceRecord(BTGlobals.APP_BT_UUID);
-            } catch(IOException e) {
-                BetterLog.e(TAG, e, "Failed to create socket!");
-                continue;
-            }
-
-            try {
-                BetterLog.d(TAG, "Trying to connect to %s", device.getName());
-                socket_.connect();
-            } catch(IOException e) {
-                BetterLog.e(TAG, e, "Unable to connect to %s", device.getName());
-                continue;
-            }
-            
-            if(socket_.isConnected()) {
-                try {
-                    readStream_ = socket_.getInputStream();
-                    writeStream_ = socket_.getOutputStream();
-                } catch(IOException e) {
-                    BetterLog.e(TAG, e, "Unable to get Streams!");
-                    // Our connection is useless now
-                    cancelConnection();
-                    continue;
-                }                
-                // All good
-                BetterLog.i(TAG, "Socket succesfully connected to %s", socket_.getRemoteDevice().getName());
-                postStatusMessage("Established Connection to" + socket_.getRemoteDevice().getName());
-                status_ = Status.CONNECTED;
-                break;
-            } else {
-                status_ = Status.NOT_CONNECTED;
-            }
-
-        }
-        
-        if(status_ != Status.CONNECTED) {
-            final String msg = "Was not able to connect to any device";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
-        }
+    public boolean isConnected() {
+        return status_ == ConnectionStatus.CONNECTED;
     }
     
-    private void postStatusMessage(String string) {
-        Intent i = new Intent(BTInvocationMessages.BT_STATUS_MESSAGE);
-        i.putExtra(BTInvokeExtras.BT_STATUS_MESSAGE, string);
-        broadcast_.sendBroadcast(i);
-
+    protected ConnectionStatus status() {
+        return status_;
     }
-
-    private void cancelConnection() {
+    protected void cancelConnection() {
         if(socket_ != null) {
             try {
                 socket_.close();
@@ -293,14 +130,32 @@ public class BTConnection {
                 socket_ = null;
             }
         }
-        status_ = Status.NOT_CONNECTED;
+        changeStatus(ConnectionStatus.NOT_CONNECTED);
     }
     
-    private void cancelThreads() {
-        BackgroundExecutor.cancelAll("accept_thread", true);
-        BackgroundExecutor.cancelAll("connect_thread", true);
+    protected void changeStatus(ConnectionStatus newStatus) {
+        Intent i = new Intent(BTConnectionMessages.CONNECTION_STATUS_MESSAGE);
+        i.putExtra(BTConnectionMessages.EXTRA_TYPE, newStatus.ordinal());
+        if(newStatus == ConnectionStatus.CONNECTED)
+            i.putExtra(BTConnectionMessages.EXTRA_DEVICE, socket_.getRemoteDevice().getName());
+        
+        broadcast_.sendBroadcast(i);
+        
+        BetterLog.i(TAG, "Changed connection status. New status: %s", newStatus.toString());
+        
+        status_ = newStatus;
     }
-
+    
+    protected void reportError(final int errorType) {
+        Intent i = new Intent(BTConnectionMessages.CONNECTION_STATUS_MESSAGE);
+        i.putExtra(BTConnectionMessages.EXTRA_TYPE, errorType);
+        
+        broadcast_.sendBroadcast(i);
+    }
+        
+    protected abstract void cancelThread();
+    protected abstract void doConnect();
+    
     private final BroadcastReceiver broadcastReciever_ = new BroadcastReceiver() {
 
         @Override
@@ -311,11 +166,11 @@ public class BTConnection {
                 // Bluetooth was turned off
                 if(newState == BluetoothAdapter.STATE_OFF) {
                     BetterLog.i(TAG, "Bluetooth was turned off! Canceling threads and the connection.");
-                    cancelThreads();
+                    cancelThread();
                     cancelConnection();
-                    status_ = Status.DISABLED;
-                } else if(newState == BluetoothAdapter.STATE_ON && status_ == Status.DISABLED) {
-                    status_ = Status.NOT_CONNECTED;
+                    changeStatus(ConnectionStatus.DISABLED);
+                } else if(newState == BluetoothAdapter.STATE_ON && status_ == ConnectionStatus.DISABLED) {
+                    status_ = ConnectionStatus.NOT_CONNECTED;
                 }
             }
         }

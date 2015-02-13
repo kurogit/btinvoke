@@ -14,6 +14,8 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnection;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionException;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTServerConnection;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
@@ -24,7 +26,7 @@ public class BTInvocationServerService extends Service {
     private final String TAG = "BTIServerService";
 
     @Bean
-    BTConnection connection_;
+    BTServerConnection connection_;
 
     private LocalBroadcastManager broadcast_ = null;
     
@@ -47,7 +49,7 @@ public class BTInvocationServerService extends Service {
 
         broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_INVOCATION));
 
-        connection_.acceptConnection();
+        connection_.connect();
     }
 
     @Override
@@ -56,6 +58,7 @@ public class BTInvocationServerService extends Service {
         BetterLog.v(TAG, "onDestroy");
 
         broadcast_.unregisterReceiver(broadCastReciever_);
+        connection_.destroy();
     }
 
     @Background(id = "send_and_wait_thread", serial = "send_and_wait_thread")
@@ -69,8 +72,8 @@ public class BTInvocationServerService extends Service {
             intent.putExtra(BTInvokeExtras.JSONSTRING, recievedString);
             broadcast_.sendBroadcast(intent);
 
-        } catch(IOException e) {
-            BetterLog.e(TAG, e, "Writing or reading from socket failed");
+        } catch(BTConnectionException e) {
+            BetterLog.e(TAG, e, "Reading or writing failed");
         }
     }
 
@@ -80,12 +83,7 @@ public class BTInvocationServerService extends Service {
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(BTInvocationMessages.REMOTE_INVOCATION)) {
                 String jsonString = intent.getExtras().getString(BTInvokeExtras.JSONSTRING);
-                
-                if(!connection_.isConnected()) {
-                    BetterLog.i(TAG, "No connection!");
-                    return;
-                }
-                
+                                
                 sendStringAndWaitForAnswer(jsonString);
             }
         }

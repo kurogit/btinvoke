@@ -20,6 +20,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionMessages;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationException;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationHandler;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvoke;
@@ -43,8 +44,8 @@ public class GUIActivity extends Activity {
             if(intent.getAction().equals(BTInvocationMessages.REMOTE_INVOCATION_RESULT)) {
                 String recievedString = intent.getStringExtra(BTInvokeExtras.JSONSTRING);
                 addLogEntry("Recived following string:\n" + recievedString);
-            } else if(intent.getAction().equalsIgnoreCase(BTInvocationMessages.BT_STATUS_MESSAGE)) {
-                String msg = intent.getStringExtra(BTInvokeExtras.BT_STATUS_MESSAGE);
+            } else if(intent.getAction().equalsIgnoreCase(BTConnectionMessages.CONNECTION_STATUS_MESSAGE)) {
+                String msg = BTConnectionMessages.turnIntentToHumanReadableString(intent);
                 addLogEntry(msg);
             }
 
@@ -71,7 +72,7 @@ public class GUIActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.BT_STATUS_MESSAGE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadCastReciever_, new IntentFilter(BTConnectionMessages.CONNECTION_STATUS_MESSAGE));
         LocalBroadcastManager.getInstance(this).registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_INVOCATION_RESULT));
     }
 

@@ -18,17 +18,15 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionMessages;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvokeMethodManager;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.MethodCallException;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.example.CollatzLength;
 import de.hskl.ps.bluetoothinvokeexample.example.DoubleSleeper;
 import de.hskl.ps.bluetoothinvokeexample.example.ICollatzLength;
 import de.hskl.ps.bluetoothinvokeexample.example.ISleeper;
 import de.hskl.ps.bluetoothinvokeexample.services.BTInvocationServerService_;
+import de.hskl.ps.bluetoothinvokeexample.services.BTInvokeClientService;
 import de.hskl.ps.bluetoothinvokeexample.services.BTInvokeClientService_;
-import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 @EActivity(R.layout.activity_compute)
 public class ComputeActivity extends Activity {
@@ -62,7 +60,7 @@ public class ComputeActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.BT_STATUS_MESSAGE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadCastReciever_, new IntentFilter(BTConnectionMessages.CONNECTION_STATUS_MESSAGE));
     }
 
     @Override
@@ -90,23 +88,19 @@ public class ComputeActivity extends Activity {
 
     @Click(R.id.BUTTON_CONNECT)
     void onConnectClicked() {
-
-        try {
-            String json = "{\"id\":0,\"method\":\"lengthOfHailstoneSequence\",\"params\":[{\"type\":\"java.lang.Integer\",\"value\":1000}]}";
-
-            Object r = BTInvokeMethodManager.getInstance().callMethodFromJSON(json);
-            addLogEntry("Result is: " + r);
-        } catch(MethodCallException e) {
-            BetterLog.e("bla", e, "Could not call method!");
-        }
+       // Send connect intent to Service
+       //BTInvokeClientService_.intent(this).action(BTInvokeClientService.ACTION_CONNECT).start();
+       Intent i = new Intent(this, BTInvokeClientService_.class);
+       i.setAction(BTInvokeClientService.ACTION_CONNECT);
+       startService(i);
     }
 
     private final BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equalsIgnoreCase(BTInvocationMessages.BT_STATUS_MESSAGE)) {
-                String msg = intent.getStringExtra(BTInvokeExtras.BT_STATUS_MESSAGE);
+            if(intent.getAction().equalsIgnoreCase(BTConnectionMessages.CONNECTION_STATUS_MESSAGE)) {
+                String msg = BTConnectionMessages.turnIntentToHumanReadableString(intent);
                 addLogEntry(msg);
             }
 
