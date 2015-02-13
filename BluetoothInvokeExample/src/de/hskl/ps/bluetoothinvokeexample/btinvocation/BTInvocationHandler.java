@@ -11,7 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeErrorValues;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationRequest;
@@ -44,7 +44,7 @@ public class BTInvocationHandler implements InvocationHandler {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equalsIgnoreCase(BTInvocationMessages.REMOTE_INVOCATION_RESULT)) {
+            if(intent.getAction().equalsIgnoreCase(BTInvokeMessages.REMOTE_INVOCATION_RESULT)) {
                 String recievedString = intent.getStringExtra(BTInvokeExtras.JSONSTRING);
 
                 try {
@@ -68,7 +68,7 @@ public class BTInvocationHandler implements InvocationHandler {
         latch_ = new CountDownLatch(1);
 
         broadcast_ = LocalBroadcastManager.getInstance(context_);
-        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_INVOCATION_RESULT));
+        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvokeMessages.REMOTE_INVOCATION_RESULT));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class BTInvocationHandler implements InvocationHandler {
 
         BetterLog.d(TAG, "Created Json String: %s", j.toString());
         // send to service
-        Intent intent = new Intent(BTInvocationMessages.REMOTE_INVOCATION);
+        Intent intent = new Intent(BTInvokeMessages.REMOTE_INVOCATION);
         intent.putExtra(BTInvokeExtras.JSONSTRING, j.toString());
         broadcast_.sendBroadcast(intent);
 
