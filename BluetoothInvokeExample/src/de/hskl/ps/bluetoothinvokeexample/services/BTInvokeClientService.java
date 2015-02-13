@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EService;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,8 +14,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnection;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnection.Status;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTClientConnection;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.ConnectionStatus;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvokeMethodManager;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.MethodCallException;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeErrorValues;
@@ -40,7 +39,7 @@ public class BTInvokeClientService extends Service {
     private LocalBroadcastManager broadcast_ = null;
 
     @Bean
-    BTConnection connection_;
+    BTClientConnection connection_;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -58,7 +57,7 @@ public class BTInvokeClientService extends Service {
 
         broadcast_ = LocalBroadcastManager.getInstance(this);
 
-        connection_.connectAsClient();
+        connection_.connect();
         readLoop();
     }
     
@@ -72,7 +71,7 @@ public class BTInvokeClientService extends Service {
     @Background(id = "read_thread", serial = "read_thread")
     void readLoop() {
         while(true) {
-            if(connection_.status() != Status.CONNECTED) {
+            if(connection_.status() != ConnectionStatus.CONNECTED) {
                 // FIXME: Bad!
                 continue;
             }
@@ -124,7 +123,7 @@ public class BTInvokeClientService extends Service {
         }
     }
     
-    private final BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReciever_ = new BroadcastReceiver() {
         
         @Override
         public void onReceive(Context context, Intent intent) {

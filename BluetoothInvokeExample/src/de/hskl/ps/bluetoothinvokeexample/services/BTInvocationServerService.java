@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnection;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTServerConnection;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
@@ -24,7 +25,7 @@ public class BTInvocationServerService extends Service {
     private final String TAG = "BTIServerService";
 
     @Bean
-    BTConnection connection_;
+    BTServerConnection connection_;
 
     private LocalBroadcastManager broadcast_ = null;
     
@@ -47,7 +48,7 @@ public class BTInvocationServerService extends Service {
 
         broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_INVOCATION));
 
-        connection_.acceptConnection();
+        connection_.connect();
     }
 
     @Override
