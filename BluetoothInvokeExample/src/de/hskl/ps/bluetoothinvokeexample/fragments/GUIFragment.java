@@ -96,23 +96,24 @@ public class GUIFragment extends Fragment {
 
     @Click(R.id.BUTTON_REMOTE)
     void onRemoteExecute() {
-        //final String exampleMethod = "lengthOfHailstoneSequence";
-        //final long exampleArg = 1000000;
+        final String exampleMethod = "lengthOfHailstoneSequence";
+        final long exampleArg = 1000000;
         
-/*        final String exampleMethod = "sleepForSecondsAndReturn";
-        final int exampleArg1 = 3;
-        final double exampleArg2 = 4.20;
+        //final String exampleMethod = "sleepForSecondsAndReturn";
+        //final int exampleArg1 = 3;
+        //final double exampleArg2 = 4.20;
         
-        final String msg = String.format("Sending new Request: %s (%d, %f)", exampleMethod, exampleArg1, exampleArg2);
+        //final String msg = String.format("Sending new Request: %s (%d, %f)", exampleMethod, exampleArg1, exampleArg2);
+        final String msg = String.format("Sending new Request: %s (%d)", exampleMethod, exampleArg);
         addLogEntry(msg);
         
         try {
-            BTInvoke.remoteExecute(getActivity(), exampleMethod, exampleArg1, exampleArg2);
+            BTInvoke.remoteExecute(getActivity(), exampleMethod, exampleArg);
         } catch(BTInvocationException e) {
             return;
-        }*/
+        }
         
-        test();
+       // test();
     }
     
     @Background
