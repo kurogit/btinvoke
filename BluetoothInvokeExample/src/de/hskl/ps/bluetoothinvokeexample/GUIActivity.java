@@ -28,22 +28,43 @@ import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnectionMessages
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTInvocationException;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationResult;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvocationServerService_;
+import de.hskl.ps.bluetoothinvokeexample.example.CollatzLength;
 import de.hskl.ps.bluetoothinvokeexample.example.ICollatzLength;
+import de.hskl.ps.bluetoothinvokeexample.example.ISleeper;
 
+/**
+ * Example activity which runs on the GUI device or Server device.
+ * <p>
+ * This activity demonstrates how to use BTInvoke on the server side. It shows a Textview for Statusmessages and three Buttons for running examples.<br>
+ * Examples are:
+ * <ul>
+ * <il> <b>Collatz</b> Length which runs {@link CollatzLength#lengthOfHailstoneSequence(long)}.
+ * <il> <b>Sleep</b> which runs {@link ISleeper#sleepForSecondsAndReturn(int, double)}.
+ * <il> <b>Proxy</b> which runs a created proxy instance of {@link ICollatzLength}.
+ * </ul>
+ * <p>
+ * Is using {@code @EActivity} from Android Annotations.
+ * @author Patrick Schwartz
+ * @date 2014
+ */
 @EActivity(R.layout.activity_gui)
 public class GUIActivity extends Activity {
-
+    
+    /** Reference to the used {@code ListView}. */
     @ViewById(R.id.LIST_VIEW)
     ListView listView;
 
+    /** {@code ArrayAdpater} for the {@code ListView}.  */
     private ArrayAdapter<String> logEntryAdapter_ = null;
-
+    
+    /** Reference to the local broadcast manager. */
     private LocalBroadcastManager broadcast_ = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Start the service
         BTInvocationServerService_.intent(this).start();
         
         broadcast_ = LocalBroadcastManager.getInstance(this);
@@ -52,7 +73,7 @@ public class GUIActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        
         if(isFinishing()) {
             BTInvocationServerService_.intent(this).stop();
         }
@@ -61,7 +82,8 @@ public class GUIActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-
+        
+        // Register broadcast reciever
         broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTConnectionMessages.CONNECTION_STATUS_MESSAGE));
         broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvokeMessages.ACTION_STATUS_MESSAGE));
         broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvokeMessages.REMOTE_INVOCATION_RESULT));
@@ -73,13 +95,20 @@ public class GUIActivity extends Activity {
 
         broadcast_.unregisterReceiver(broadCastReciever_);
     }
-
+    
     @AfterViews
     void afterViews() {
         logEntryAdapter_ = new ArrayAdapter<String>(this, R.layout.log_message);
         listView.setAdapter(logEntryAdapter_);
     }
-
+    
+    /**
+     * Add entry to the shown log.
+     * <p>
+     * Guaranteed to be called on the UI thread through Android Annotations.
+     * 
+     * @param log The message to add to the log. Will be prepended with the current time.
+     */
     @UiThread
     void addLogEntry(String log) {
         String timestamp = DateFormat.format("H:m:s", Calendar.getInstance()).toString();
@@ -89,7 +118,14 @@ public class GUIActivity extends Activity {
         logEntryAdapter_.add(msg);
         logEntryAdapter_.notifyDataSetChanged();
     }
-
+    
+    /**
+     * Run the first example.
+     * <p>
+     * Will request a run of {@link ICollatzLength#lengthOfHailstoneSequence(long)} on the remote device.
+     * <p>
+     * A Collatz sequence is also called a Hailstone sequence.
+     */
     @Click(R.id.BUTTON_COLLATZ)
     void runHailstoneExample() {
         final String exampleMethod = "lengthOfHailstoneSequence";
@@ -104,7 +140,12 @@ public class GUIActivity extends Activity {
             return;
         }
     }
-
+    
+    /**
+     * Run the second example.
+     * <p>
+     * Will request a run of {@link ISleeper#sleepForSecondsAndReturn(int, double)} on the remote device.
+     */
     @Click(R.id.BUTTON_SLEEP)
     void runSleepExample() {
         final String exampleMethod = "sleepForSecondsAndReturn";
@@ -119,7 +160,14 @@ public class GUIActivity extends Activity {
             return;
         }
     }
-
+    
+    /**
+     * Run the third example.
+     * <p>
+     * Will create a Proxy implementation of {@link ICollatzLength} using {@link Proxy} and {@link BTInvocationHandler}.
+     * Has to run in the Background since it is a blocking call.
+     * @see {@link BTInvocationHandler}
+     */
     @Click(R.id.BUTTON_PROXY)
     @Background
     void proxyMethod() {
@@ -128,6 +176,17 @@ public class GUIActivity extends Activity {
         addLogEntry("Result: " + r);
     }
     
+    /**
+     * Broadcast receiver.
+     * <p>
+     * 
+     * Receives the following Message types:<br>
+     * <ul>
+     * <li> {@link BTInvokeMessages#REMOTE_INVOCATION_Result}. The Message containing the result of a request.
+     * <li> {@link BTConnectionMessages#CONNECTION_STATUS_MESSAGE}. For update the log with status messages.
+     * <li> {@link BTInvokeMessages#ACTION_STATUS_MESSAGE}. For update the log with status messages.
+     * </ul>
+     */
     private final BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
 
         @Override
