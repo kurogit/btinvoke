@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import android.os.Bundle;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeJSONKeys;
 
-public class RemoteExectutionRequest {
+public class RemoteInvocationRequest {
     private static final String ID = "ID";
     private static final String METHOD_NAME = "METHOD_NAME";
     private static final String METHOD_PARAMS = "METHOD_PARAMS";
@@ -16,12 +16,12 @@ public class RemoteExectutionRequest {
     private String methodName_ = null;
     private Object[] methodParams_ = null;
 
-    public static RemoteExectutionRequest fromBundle(Bundle b) {
+    public static RemoteInvocationRequest fromBundle(Bundle b) {
         long id = b.getLong(ID);
         String methodName = b.getString(METHOD_NAME);
         Object[] methodParams = (Object[]) b.get(METHOD_PARAMS);
 
-        return new RemoteExectutionRequest(id, methodName, methodParams);
+        return new RemoteInvocationRequest(id, methodName, methodParams);
     }
     
     public static JSONObject toJsonObject(long id, String methodName, Object[] methodParameters) throws JSONException {
@@ -33,7 +33,7 @@ public class RemoteExectutionRequest {
         return j;
     }
 
-    public RemoteExectutionRequest(long id, String methodName, Object[] methodParameters) {
+    public RemoteInvocationRequest(long id, String methodName, Object[] methodParameters) {
         id_ = id;
         methodName_ = methodName;
         methodParams_ = methodParameters;

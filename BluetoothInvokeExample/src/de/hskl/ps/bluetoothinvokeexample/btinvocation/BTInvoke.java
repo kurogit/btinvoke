@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
-import de.hskl.ps.bluetoothinvokeexample.helper.RemoteExectutionRequest;
+import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationRequest;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 public class BTInvoke {
@@ -32,7 +32,7 @@ public class BTInvoke {
                 
         JSONObject j = null;
         try {
-            j = RemoteExectutionRequest.toJsonObject(id, methodName, args);
+            j = RemoteInvocationRequest.toJsonObject(id, methodName, args);
         } catch(JSONException e) {
             throw new BTInvocationException("Failed to convert to JSON", e);
         }

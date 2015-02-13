@@ -15,7 +15,7 @@ import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeErrorValues;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeJSONKeys;
-import de.hskl.ps.bluetoothinvokeexample.helper.RemoteExectutionRequest;
+import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationRequest;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -77,7 +77,7 @@ public class BTInvocationHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
         // Turn method to json
-        JSONObject j = RemoteExectutionRequest.toJsonObject(id_, method.getName(), params);
+        JSONObject j = RemoteInvocationRequest.toJsonObject(id_, method.getName(), params);
 
         BetterLog.d(TAG, "Created Json String: %s", j.toString());
         // send to service
