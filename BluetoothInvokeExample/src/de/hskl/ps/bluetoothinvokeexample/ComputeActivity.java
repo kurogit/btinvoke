@@ -18,6 +18,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMethodManager;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnectionMessages;
@@ -29,22 +30,41 @@ import de.hskl.ps.bluetoothinvokeexample.example.DoubleSleeper;
 import de.hskl.ps.bluetoothinvokeexample.example.ICollatzLength;
 import de.hskl.ps.bluetoothinvokeexample.example.ISleeper;
 
+/**
+ * Example activity which runs on the compute or client device.
+ * <p>
+ * This activity demonstrates how to use BTInvoke on the client side. It shows a {@link TextView}
+ * for status messages and a Button for connecting.<br>
+ * <p>
+ * Is using {@code @EActivity} from Android Annotations.
+ * 
+ * @author Patrick Schwartz
+ * @date 2015
+ */
 @EActivity(R.layout.activity_compute)
 public class ComputeActivity extends Activity {
-    
+
+    /** Reference to the used {@code ListView}. */
+    @ViewById(R.id.LIST_VIEW)
+    ListView listView;
+
+    /** {@code ArrayAdpater} for the {@code ListView}. */
+    private ArrayAdapter<String> logEntryAdapter_ = null;
+
+    /** Reference to the local broadcast manager. */
     private LocalBroadcastManager broadcast_ = null;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         broadcast_ = LocalBroadcastManager.getInstance(this);
-        
+
         BTInvokeClientService_.intent(this).start();
 
+        // Register callable interfaces
         BTInvokeMethodManager.getInstance().registerInterfaceAndImplementation(ICollatzLength.class, new CollatzLength());
         BTInvokeMethodManager.getInstance().registerInterfaceAndImplementation(ISleeper.class, new DoubleSleeper());
-
     }
 
     @Override
@@ -55,11 +75,6 @@ public class ComputeActivity extends Activity {
             BTInvocationServerService_.intent(this).stop();
         }
     }
-
-    @ViewById(R.id.LIST_VIEW)
-    ListView listView;
-
-    private ArrayAdapter<String> logEntryAdapter_ = null;
 
     @Override
     public void onResume() {
@@ -81,7 +96,14 @@ public class ComputeActivity extends Activity {
         logEntryAdapter_ = new ArrayAdapter<String>(this, R.layout.log_message);
         listView.setAdapter(logEntryAdapter_);
     }
-
+    
+    /**
+     * Add entry to the shown log.
+     * <p>
+     * Guaranteed to be called on the UI thread through Android Annotations.
+     * 
+     * @param log The message to add to the log. Will be prepended with the current time.
+     */
     @UiThread
     void addLogEntry(String log) {
         String timestamp = DateFormat.format("H:m:s", Calendar.getInstance()).toString();
@@ -91,15 +113,28 @@ public class ComputeActivity extends Activity {
         logEntryAdapter_.add(msg);
         logEntryAdapter_.notifyDataSetChanged();
     }
-
+    
+    /**
+     * Try to connect to a server device.
+     */
     @Click(R.id.BUTTON_CONNECT)
     void onConnectClicked() {
-       // Send connect intent to Service
-       Intent i = new Intent(this, BTInvokeClientService_.class);
-       i.setAction(BTInvokeClientService.ACTION_CONNECT);
-       startService(i);
+        // Send connect intent to Service
+        Intent i = new Intent(this, BTInvokeClientService_.class);
+        i.setAction(BTInvokeClientService.ACTION_CONNECT);
+        startService(i);
     }
-
+    
+    /**
+     * Used broadcast receiver.
+     * <p>
+     * 
+     * Receives the following Message types:<br>
+     * <ul>
+     * <li> {@link BTConnectionMessages#CONNECTION_STATUS_MESSAGE}. For update the log with status messages.
+     * <li> {@link BTInvokeMessages#ACTION_STATUS_MESSAGE}. For update the log with status messages.
+     * </ul>
+     */
     private final BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
 
         @Override
