@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EService;
+import org.json.JSONException;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -16,8 +17,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnection;
 import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionException;
 import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTServerConnection;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
+import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationResult;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
 @EService
@@ -47,7 +49,7 @@ public class BTInvocationServerService extends Service {
 
         broadcast_ = LocalBroadcastManager.getInstance(this);
 
-        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_INVOCATION));
+        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvokeMessages.REMOTE_INVOCATION));
 
         connection_.connect();
     }
@@ -64,24 +66,37 @@ public class BTInvocationServerService extends Service {
     @Background(id = "send_and_wait_thread", serial = "send_and_wait_thread")
     void sendStringAndWaitForAnswer(String s) {        
         try {
+            sendStatusMessage(BTInvokeMessages.Status.NEW_INVOCATION_REQUEST);
+            
             connection_.writeString(s);
 
             String recievedString = connection_.readString();
-
-            Intent intent = new Intent(BTInvocationMessages.REMOTE_INVOCATION_RESULT);
+            
+            sendStatusMessage(BTInvokeMessages.Status.RECIEVED_RESULT);
+            
+            Intent intent = new Intent(BTInvokeMessages.REMOTE_INVOCATION_RESULT);
             intent.putExtra(BTInvokeExtras.JSONSTRING, recievedString);
             broadcast_.sendBroadcast(intent);
 
         } catch(BTConnectionException e) {
             BetterLog.e(TAG, e, "Reading or writing failed");
+            
+            // Send failed Message
+            sendStatusMessage(BTInvokeMessages.Errors.SENDING_STRING_FAILED);
         }
     }
-
+    
+    private void sendStatusMessage(final int type) {
+        Intent i = new Intent(BTInvokeMessages.ACTION_STATUS_MESSAGE);
+        i.putExtra(BTInvokeMessages.Extras.STATUS_TYPE, type);
+        broadcast_.sendBroadcast(i);
+    }
+    
     private final BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(BTInvocationMessages.REMOTE_INVOCATION)) {
+            if(intent.getAction().equals(BTInvokeMessages.REMOTE_INVOCATION)) {
                 String jsonString = intent.getExtras().getString(BTInvokeExtras.JSONSTRING);
                                 
                 sendStringAndWaitForAnswer(jsonString);

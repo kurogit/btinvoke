@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationRequest;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
@@ -40,12 +40,13 @@ public class BTInvoke {
         String s = j.toString();
         BetterLog.d(TAG, "Created Json String: %s", s);
         
+        LocalBroadcastManager b = LocalBroadcastManager.getInstance(context);
         
         // Send Message
-        Intent intent = new Intent(BTInvocationMessages.REMOTE_INVOCATION);
+        Intent intent = new Intent(BTInvokeMessages.REMOTE_INVOCATION);
         intent.putExtra(BTInvokeExtras.JSONSTRING, s);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-        
+        b.sendBroadcast(intent);
+                
         return id;
     }
 

@@ -11,7 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 

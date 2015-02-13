@@ -20,6 +20,7 @@ import de.hskl.ps.bluetoothinvokeexample.bluetooth.ConnectionStatus;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvokeMethodManager;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.MethodCallException;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeErrorValues;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
 import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationRequest;
 import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationResult;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
@@ -67,8 +68,7 @@ public class BTInvokeClientService extends Service {
 
         broadcast_ = LocalBroadcastManager.getInstance(this);
 
-        // We need to listen to the connected message before we can start the
-        // loop
+        // We need to listen to the connected message before we can start the loop
         broadcast_.registerReceiver(broadcastReciever_, new IntentFilter(BTConnectionMessages.CONNECTION_STATUS_MESSAGE));
     }
 
@@ -90,6 +90,7 @@ public class BTInvokeClientService extends Service {
             } catch(BTConnectionException e) {
                 BetterLog.e(TAG, e, "Exception while reading");
                 // If reading fails we can't really send an answer
+                sendStatusMessage(BTInvokeMessages.Errors.READING_STRING_FAILED);
                 continue;
             }
 
@@ -99,24 +100,31 @@ public class BTInvokeClientService extends Service {
             } catch(JSONException e) {
                 BetterLog.e(TAG, e, "Exception while converting incoming JSON");
                 // We cant get to the id and method anymore.
+                sendStatusMessage(BTInvokeMessages.Errors.READING_STRING_FAILED);
                 continue;
             }
-
+            
+            sendStatusMessage(BTInvokeMessages.Status.HANDLING_REQUEST);
+            
             Object result = null;
             try {
                 result = BTInvokeMethodManager.getInstance().callMethod(r.methodName(), r.methodParams());
             } catch(MethodCallException e) {
                 BetterLog.e(TAG, e, "Exception while calling method");
                 result = BTInvokeErrorValues.ERROR_RESULT;
+                sendStatusMessage(BTInvokeMessages.Errors.CALLING_METHOD_FAILED);
             }
-
+            
+            sendStatusMessage(BTInvokeMessages.Status.METHOD_CALL_DONE);
+            
             // Create result string
             JSONObject j = null;
             try {
                 j = RemoteInvocationResult.toJSONObject(r.id(), result);
-            } catch(JSONException e1) {
-                BetterLog.e(TAG, "Exception while creating answer JSON");
+            } catch(JSONException e) {
+                BetterLog.e(TAG, e, "Exception while creating answer JSON");
                 // If this fails we can't do anything
+                sendStatusMessage(BTInvokeMessages.Errors.SENDING_STRING_FAILED);
                 continue;
             }
 
@@ -125,19 +133,27 @@ public class BTInvokeClientService extends Service {
             } catch(BTConnectionException e) {
                 BetterLog.e(TAG, e, "Exception while writing");
                 // If writing does not work we can't send the answer.
+                sendStatusMessage(BTInvokeMessages.Errors.SENDING_STRING_FAILED);
                 continue;
             }
 
         }
     }
-
+    
+    private void sendStatusMessage(final int type) {
+        Intent i =new Intent(BTInvokeMessages.ACTION_STATUS_MESSAGE);
+        i.putExtra(BTInvokeMessages.Extras.STATUS_TYPE, type);
+        
+        broadcast_.sendBroadcast(i);
+    }
+    
     private final BroadcastReceiver broadcastReciever_ = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(BTConnectionMessages.CONNECTION_STATUS_MESSAGE)) {
                 
-                int type = intent.getIntExtra(BTConnectionMessages.EXTRA_TYPE, -255);
+                int type = intent.getIntExtra(BTConnectionMessages.EXTRA_TYPE, -1);
                 if(type == ConnectionStatus.CONNECTED.ordinal()) {
                     // We are connected. Start the readLoop.
                     readLoop();

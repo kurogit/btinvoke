@@ -4,8 +4,7 @@ public class DoubleSleeper implements ISleeper {
 
     @Override
     public double sleepForSecondsAndReturn(int s, double d) throws InterruptedException {
-        Thread.sleep(s);
-        
+        Thread.sleep(s * 1000);
         return d;
     }
 

@@ -33,44 +33,44 @@ public final class BTConnectionMessages {
 
         int type = i.getIntExtra(EXTRA_TYPE, DEFAULT_TYPE);
 
-        String m = "";
+        String m = "Bluetooth: ";
         // Switch does not work here
         if(type == ConnectionStatus.DISABLED.ordinal()) {
-            m = "Bluetooth disabled";
+            m += "Bluetooth disabled";
         } else if(type == ConnectionStatus.NOT_CONNECTED.ordinal()) {
-            m = "Not connected";
+            m += "Not connected";
         } else if(type == ConnectionStatus.ACCEPTING.ordinal()) {
-            m = "Accepting connection";
+            m += "Accepting connection";
         } else if(type == ConnectionStatus.CONNECTING.ordinal()) {
-            m = "Currently connecting";
+            m += "Currently connecting";
         } else if(type == ConnectionStatus.CONNECTED.ordinal()) {
             String deviceName = i.getStringExtra(EXTRA_DEVICE);
-            m = "Connection established to " + deviceName;
+            m += "Connection established to " + deviceName;
         }
         // It is an Error
         switch (type) {
         case Errors.NOT_CONNECTED: {
-            m = "No connection present!";
+            m += "No connection present!";
             break;
         }
         case Errors.BLUETOOTH_DISABLED: {
-            m = "Bluetooth is disabled!";
+            m += "Bluetooth is disabled!";
             break;
         }
         case Errors.ALREADY_CONNECTING: {
-            m = "Already trying to connect!";
+            m += "Already trying to connect!";
             break;
         }
         case Errors.ALREADY_CONNECTED: {
-            m = "Already connected!";
+            m += "Already connected!";
             break;
         }
         case Errors.CONNECTING_FAILED: {
-            m = "The connection failed!";
+            m += "The connection failed!";
             break;
         }
         case Errors.NO_BONDED_DEVICES: {
-            m = "There are no bonded Devices. This App requires an already bonded device!";
+            m += "There are no bonded Devices. This App requires an already bonded device!";
             break;
         }
         }

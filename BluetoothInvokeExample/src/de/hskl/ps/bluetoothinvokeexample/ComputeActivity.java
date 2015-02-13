@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionMessages;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvokeMethodManager;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
 import de.hskl.ps.bluetoothinvokeexample.example.CollatzLength;
 import de.hskl.ps.bluetoothinvokeexample.example.DoubleSleeper;
 import de.hskl.ps.bluetoothinvokeexample.example.ICollatzLength;
@@ -30,11 +31,15 @@ import de.hskl.ps.bluetoothinvokeexample.services.BTInvokeClientService_;
 
 @EActivity(R.layout.activity_compute)
 public class ComputeActivity extends Activity {
-
+    
+    private LocalBroadcastManager broadcast_ = null;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        broadcast_ = LocalBroadcastManager.getInstance(this);
+        
         BTInvokeClientService_.intent(this).start();
 
         BTInvokeMethodManager.getInstance().registerInterfaceAndImplementation(ICollatzLength.class, new CollatzLength());
@@ -60,14 +65,15 @@ public class ComputeActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadCastReciever_, new IntentFilter(BTConnectionMessages.CONNECTION_STATUS_MESSAGE));
+        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTConnectionMessages.CONNECTION_STATUS_MESSAGE));
+        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvokeMessages.ACTION_STATUS_MESSAGE));
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadCastReciever_);
+        broadcast_.unregisterReceiver(broadCastReciever_);
     }
 
     @AfterViews
@@ -89,7 +95,6 @@ public class ComputeActivity extends Activity {
     @Click(R.id.BUTTON_CONNECT)
     void onConnectClicked() {
        // Send connect intent to Service
-       //BTInvokeClientService_.intent(this).action(BTInvokeClientService.ACTION_CONNECT).start();
        Intent i = new Intent(this, BTInvokeClientService_.class);
        i.setAction(BTInvokeClientService.ACTION_CONNECT);
        startService(i);
@@ -101,6 +106,9 @@ public class ComputeActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equalsIgnoreCase(BTConnectionMessages.CONNECTION_STATUS_MESSAGE)) {
                 String msg = BTConnectionMessages.turnIntentToHumanReadableString(intent);
+                addLogEntry(msg);
+            } else if(intent.getAction().equalsIgnoreCase(BTInvokeMessages.ACTION_STATUS_MESSAGE)) {
+                String msg = BTInvokeMessages.turnIntentToHumanReadableString(intent);
                 addLogEntry(msg);
             }
 

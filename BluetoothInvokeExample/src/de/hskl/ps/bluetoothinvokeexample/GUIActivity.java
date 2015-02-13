@@ -9,6 +9,7 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -24,9 +25,10 @@ import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionMessages;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationException;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationHandler;
 import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvoke;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
+import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
 import de.hskl.ps.bluetoothinvokeexample.example.ICollatzLength;
+import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationResult;
 import de.hskl.ps.bluetoothinvokeexample.services.BTInvocationServerService_;
 
 @EActivity(R.layout.activity_gui)
@@ -37,26 +39,15 @@ public class GUIActivity extends Activity {
 
     private ArrayAdapter<String> logEntryAdapter_ = null;
 
-    private final BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(BTInvocationMessages.REMOTE_INVOCATION_RESULT)) {
-                String recievedString = intent.getStringExtra(BTInvokeExtras.JSONSTRING);
-                addLogEntry("Recived following string:\n" + recievedString);
-            } else if(intent.getAction().equalsIgnoreCase(BTConnectionMessages.CONNECTION_STATUS_MESSAGE)) {
-                String msg = BTConnectionMessages.turnIntentToHumanReadableString(intent);
-                addLogEntry(msg);
-            }
-
-        }
-    };
+    private LocalBroadcastManager broadcast_ = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         BTInvocationServerService_.intent(this).start();
+        
+        broadcast_ = LocalBroadcastManager.getInstance(this);
     }
 
     @Override
@@ -72,15 +63,16 @@ public class GUIActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadCastReciever_, new IntentFilter(BTConnectionMessages.CONNECTION_STATUS_MESSAGE));
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_INVOCATION_RESULT));
+        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTConnectionMessages.CONNECTION_STATUS_MESSAGE));
+        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvokeMessages.ACTION_STATUS_MESSAGE));
+        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvokeMessages.REMOTE_INVOCATION_RESULT));
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadCastReciever_);
+        broadcast_.unregisterReceiver(broadCastReciever_);
     }
 
     @AfterViews
@@ -136,5 +128,30 @@ public class GUIActivity extends Activity {
         long r = i.lengthOfHailstoneSequence(1000000);
         addLogEntry("Result: " + r);
     }
+    
+    private final BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(BTInvokeMessages.REMOTE_INVOCATION_RESULT)) {
+                String recievedString = intent.getStringExtra(BTInvokeExtras.JSONSTRING);
+                
+                RemoteInvocationResult r = null;
+                try {
+                    r = RemoteInvocationResult.fromJSONString(recievedString);
+                } catch(JSONException e) {
+                }
+                
+                addLogEntry("Recieved following result: " + r.result());
+            } else if(intent.getAction().equalsIgnoreCase(BTConnectionMessages.CONNECTION_STATUS_MESSAGE)) {
+                String msg = BTConnectionMessages.turnIntentToHumanReadableString(intent);
+                addLogEntry(msg);
+            } else if(intent.getAction().equalsIgnoreCase(BTInvokeMessages.ACTION_STATUS_MESSAGE)) {
+                String msg = BTInvokeMessages.turnIntentToHumanReadableString(intent);
+                addLogEntry(msg);
+            }
+
+        }
+    };
 
 }
