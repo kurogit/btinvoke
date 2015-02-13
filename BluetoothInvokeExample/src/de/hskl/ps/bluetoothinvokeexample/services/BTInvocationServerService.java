@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnection;
+import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionException;
 import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTServerConnection;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvocationMessages;
 import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
@@ -71,8 +72,8 @@ public class BTInvocationServerService extends Service {
             intent.putExtra(BTInvokeExtras.JSONSTRING, recievedString);
             broadcast_.sendBroadcast(intent);
 
-        } catch(IOException e) {
-            BetterLog.e(TAG, e, "Writing or reading from socket failed");
+        } catch(BTConnectionException e) {
+            BetterLog.e(TAG, e, "Reading or writing failed");
         }
     }
 
@@ -82,12 +83,7 @@ public class BTInvocationServerService extends Service {
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(BTInvocationMessages.REMOTE_INVOCATION)) {
                 String jsonString = intent.getExtras().getString(BTInvokeExtras.JSONSTRING);
-                
-                if(!connection_.isConnected()) {
-                    BetterLog.i(TAG, "No connection!");
-                    return;
-                }
-                
+                                
                 sendStringAndWaitForAnswer(jsonString);
             }
         }

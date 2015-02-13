@@ -76,23 +76,12 @@ public abstract class BTConnection {
         // Let subclass handle the rest
         doConnect();
     }
-    
-
-    /** Returns the current connection status */
-    public ConnectionStatus status() {
-        return status_;
-    }
-    
-    public boolean isConnected() {
-        return status_ == ConnectionStatus.CONNECTED;
-    }
-    
-    public void writeString(String s) throws IOException {
+        
+    public void writeString(String s) throws BTConnectionException {
         if(status_ != ConnectionStatus.CONNECTED) {
-            final String msg = "Bluetooth ist not connected!";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
-            return;
+            BetterLog.i(TAG, "Bluetooth ist not connected!");
+            reportError(BTConnectionMessages.Errors.NOT_CONNECTED);
+            throw new BTConnectionException("Bluetooth is not connected!");
         }
         
         try {
@@ -100,16 +89,15 @@ public abstract class BTConnection {
         } catch(IOException e) {
             // socket is somehow closed
             cancelConnection();
-            throw e;
+            throw new BTConnectionException("Socket was closed", e);
         }
     }
     
-    public String readString() throws IOException {
+    public String readString() throws BTConnectionException {
         if(status_ != ConnectionStatus.CONNECTED) {
-            final String msg = "Bluetooth ist not connected!";
-            BetterLog.i(TAG, msg);
-            postStatusMessage(msg);
-            return null;
+            BetterLog.i(TAG, "Bluetooth ist not connected!");
+            reportError(BTConnectionMessages.Errors.NOT_CONNECTED);
+            throw new BTConnectionException("Bluetooth not connected");
         }
         
         try {            
@@ -120,10 +108,17 @@ public abstract class BTConnection {
         } catch(IOException e) {
             // socket is somehow closed
             cancelConnection();
-            throw e;
+            throw new BTConnectionException("Socket was closed", e);
         }
     }
     
+    public boolean isConnected() {
+        return status_ == ConnectionStatus.CONNECTED;
+    }
+    
+    protected ConnectionStatus status() {
+        return status_;
+    }
     protected void cancelConnection() {
         if(socket_ != null) {
             try {
@@ -146,6 +141,8 @@ public abstract class BTConnection {
         
         broadcast_.sendBroadcast(i);
         
+        BetterLog.i(TAG, "Changed connection status. New status: %s", newStatus.toString());
+        
         status_ = newStatus;
     }
     
@@ -155,13 +152,7 @@ public abstract class BTConnection {
         
         broadcast_.sendBroadcast(i);
     }
-    
-    private void postStatusMessage(String string) {
-        Intent i = new Intent(BTInvocationMessages.BT_STATUS_MESSAGE);
-        i.putExtra(BTInvokeExtras.BT_STATUS_MESSAGE, string);
-        broadcast_.sendBroadcast(i);
-    }
-    
+        
     protected abstract void cancelThread();
     protected abstract void doConnect();
     
