@@ -45,7 +45,7 @@ public class BTInvocationServerService extends Service {
 
         broadcast_ = LocalBroadcastManager.getInstance(this);
 
-        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_EXECUTE));
+        broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_INVOCATION));
 
         connection_.acceptConnection();
     }
@@ -65,7 +65,7 @@ public class BTInvocationServerService extends Service {
 
             String recievedString = connection_.readString();
 
-            Intent intent = new Intent(BTInvocationMessages.REMOTE_EXECUTE_RESULT);
+            Intent intent = new Intent(BTInvocationMessages.REMOTE_INVOCATION_RESULT);
             intent.putExtra(BTInvokeExtras.JSONSTRING, recievedString);
             broadcast_.sendBroadcast(intent);
 
@@ -78,7 +78,7 @@ public class BTInvocationServerService extends Service {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(BTInvocationMessages.REMOTE_EXECUTE)) {
+            if(intent.getAction().equals(BTInvocationMessages.REMOTE_INVOCATION)) {
                 String jsonString = intent.getExtras().getString(BTInvokeExtras.JSONSTRING);
                 
                 if(!connection_.isConnected()) {

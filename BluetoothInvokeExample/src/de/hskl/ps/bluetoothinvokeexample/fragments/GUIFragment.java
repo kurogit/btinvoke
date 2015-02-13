@@ -46,7 +46,7 @@ public class GUIFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(BTInvocationMessages.REMOTE_EXECUTE_RESULT)) {
+            if(intent.getAction().equals(BTInvocationMessages.REMOTE_INVOCATION_RESULT)) {
                 String recievedString = intent.getStringExtra(BTInvokeExtras.JSONSTRING);
                 addLogEntry("Recived following string:\n" + recievedString);
             } else if(intent.getAction().equalsIgnoreCase(BTInvocationMessages.BT_STATUS_MESSAGE)) {
@@ -66,7 +66,7 @@ public class GUIFragment extends Fragment {
         super.onResume();
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.BT_STATUS_MESSAGE));
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_EXECUTE_RESULT));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadCastReciever_, new IntentFilter(BTInvocationMessages.REMOTE_INVOCATION_RESULT));
     }
 
     @Override

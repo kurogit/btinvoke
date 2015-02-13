@@ -42,7 +42,7 @@ public class BTInvoke {
         
         
         // Send Message
-        Intent intent = new Intent(BTInvocationMessages.REMOTE_EXECUTE);
+        Intent intent = new Intent(BTInvocationMessages.REMOTE_INVOCATION);
         intent.putExtra(BTInvokeExtras.JSONSTRING, s);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         
