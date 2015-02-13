@@ -19,6 +19,8 @@ public class StartActivity extends Activity {
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
         adapter_ = BluetoothAdapter.getDefaultAdapter();
         
         if(!adapter_.isEnabled()) {
