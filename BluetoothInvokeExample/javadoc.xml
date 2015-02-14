@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="javadoc">
     <target name="javadoc">
-        <javadoc access="private" additionalparam=" -linkoffline http://developer.android.com/reference file:/opt/android-sdk/docs/reference" author="true" classpath="/opt/android-sdk/platforms/android-19/android.jar:libs/android-support-v4.jar:libs/androidannotations-api-3.2.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions,de.hskl.ps.bluetoothinvokeexample.util,de.hskl.ps.bluetoothinvokeexample.btinvoke.helper,de.hskl.ps.bluetoothinvokeexample.example" source="1.6" sourcefiles="src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/BTServerConnection.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/BTConnectionParameters.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/BTInvoke.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/BTInvokeMessages.java,src/de/hskl/ps/bluetoothinvokeexample/ComputeActivity.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/ConnectionStatus.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/BTConnectionMessages.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/services/BTInvocationServerService.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/BTClientConnection.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/BTConnection.java,src/de/hskl/ps/bluetoothinvokeexample/StartActivity.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/BTInvokeMethodManager.java,src/de/hskl/ps/bluetoothinvokeexample/GUIActivity.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/BTInvocationHandler.java,src/de/hskl/ps/bluetoothinvokeexample/btinvoke/services/BTInvokeClientService.java" sourcepath="src:gen" splitindex="true" use="true" version="true"/>
+        <javadoc 
+	  access="private" 
+	  additionalparam="-linkoffline http://developer.android.com/reference file:/opt/android-sdk/docs/reference -link /home/patrick/FH/Master/S3/ANDROID/project/androidproject/BluetoothInvokeExample/external/androidannotations-api-3.2-javadoc" 
+	  author="true" 
+	  classpath="/opt/android-sdk/platforms/android-19/android.jar:libs/android-support-v4.jar:libs/androidannotations-api-3.2.jar" 
+	  destdir="doc" 
+	  nodeprecated="false" 
+	  nodeprecatedlist="false" 
+	  noindex="false" 
+	  nonavbar="false" 
+	  notree="false"
+	  source="1.6"
+	  sourcepath="src:gen"
+	  splitindex="true"
+	  use="true"
+	  version="true"
+	  />
     </target>
 </project>
