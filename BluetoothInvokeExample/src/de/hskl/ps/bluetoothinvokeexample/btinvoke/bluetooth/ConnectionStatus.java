@@ -1,6 +1,21 @@
 package de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth;
 
-/** Connection status */
+/**
+ * Bluetooth Connection status
+ * 
+ * @author Patrick Schwartz
+ * @date 2015
+ *
+ */
 public enum ConnectionStatus {
-    DISABLED, NOT_CONNECTED, ACCEPTING, CONNECTING, CONNECTED
+    /** The Bluetooth adapter is disabled. */
+    DISABLED,
+    /** No connection present */
+    NOT_CONNECTED,
+    /** A BTServerConnection is currently accepting connections. */
+    ACCEPTING,
+    /** A BTClientConnection is currently connecting. */
+    CONNECTING,
+    /** Connection was established */
+    CONNECTED
 }
