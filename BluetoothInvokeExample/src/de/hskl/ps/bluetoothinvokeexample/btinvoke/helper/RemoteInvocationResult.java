@@ -3,7 +3,7 @@ package de.hskl.ps.bluetoothinvokeexample.btinvoke.helper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeError;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages.Result;
 
 /**
  * Helper class representing a remote invocation result.
@@ -14,7 +14,7 @@ import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeError;
  * A remote invocation result has two components:<br>
  * <ul>
  * <li><b>ID</b>. The id of the Request. Used to match a received result to a request.
- * <li><b>result</b>. The result of the remote method or {@link BTInvokeError#ERROR_RESULT} if an
+ * <li><b>result</b>. The result of the remote method or {@link Result#ERROR_RESULT} if an
  * Error happened which still allowed to send an answer.
  * </ul>
  * <p>

@@ -13,8 +13,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeError;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages.Result;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMethodManager;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTClientConnection;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnectionMessages;
@@ -111,7 +111,7 @@ public class BTInvokeClientService extends Service {
                 result = BTInvokeMethodManager.getInstance().callMethod(r.methodName(), r.methodParams());
             } catch(MethodCallException e) {
                 BetterLog.e(TAG, e, "Exception while calling method");
-                result = BTInvokeError.ERROR_RESULT;
+                result = Result.ERROR_RESULT;
                 sendStatusMessage(BTInvokeMessages.Errors.CALLING_METHOD_FAILED);
             }
             

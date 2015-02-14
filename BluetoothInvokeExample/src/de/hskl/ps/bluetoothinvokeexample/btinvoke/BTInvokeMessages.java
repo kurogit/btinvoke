@@ -34,6 +34,12 @@ public final class BTInvokeMessages {
         private Extras(){}
     }
     
+    public static final class Result {
+        public static final String ERROR_RESULT = "error";
+
+        private Result(){}
+    }
+    
     public static final String turnIntentToHumanReadableString(Intent i) {
         if(!i.getAction().equalsIgnoreCase(ACTION_STATUS_MESSAGE)) {
             return "";
@@ -75,6 +81,6 @@ public final class BTInvokeMessages {
         
         return m;
     }
-    
+
     private BTInvokeMessages(){}
 }

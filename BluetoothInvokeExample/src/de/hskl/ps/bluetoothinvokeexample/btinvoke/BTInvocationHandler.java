@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages.Result;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTInvocationException;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationRequest;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationResult;
@@ -53,7 +54,7 @@ public class BTInvocationHandler implements InvocationHandler {
 
                 } catch(JSONException e) {
                     BetterLog.e(TAG, e, "Converting result string from JSON failed");
-                    result_ = BTInvokeError.ERROR_RESULT;
+                    result_ = Result.ERROR_RESULT;
                 }
             }
         }
@@ -89,7 +90,7 @@ public class BTInvocationHandler implements InvocationHandler {
             throw new BTInvocationException("Timeout on anwser");
         
         // Check if we received an Error
-        if(result_.equals(BTInvokeError.ERROR_RESULT)) {
+        if(result_.equals(Result.ERROR_RESULT)) {
             throw new BTInvocationException("Error on compute device. Check the logs on the compute device for more info.");
         }
 
