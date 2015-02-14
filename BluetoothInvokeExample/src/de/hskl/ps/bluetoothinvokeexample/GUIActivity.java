@@ -171,7 +171,7 @@ public class GUIActivity extends Activity {
     @Click(R.id.BUTTON_PROXY)
     @Background
     void proxyMethod() {
-        ICollatzLength i = (ICollatzLength) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[] { ICollatzLength.class }, new BTInvocationHandler());
+        ICollatzLength i = (ICollatzLength) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[] { ICollatzLength.class }, new BTInvocationHandler(this));
         long r = i.lengthOfHailstoneSequence(1000000);
         addLogEntry("Result: " + r);
     }
