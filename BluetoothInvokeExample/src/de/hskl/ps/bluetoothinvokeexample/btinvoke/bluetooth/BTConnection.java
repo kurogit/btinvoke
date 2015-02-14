@@ -117,7 +117,7 @@ public abstract class BTConnection {
      * Read a String over the connection. Will block until a String arrives.
      * @return The read String
      * @throws BTConnectionException BTConnectionException if there was an error receiving the String.
-     * @see {@link InputStream#read()}
+     * @see InputStream#read()
      */
     public String readString() throws BTConnectionException {
         if(status_ != ConnectionStatus.CONNECTED) {

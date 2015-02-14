@@ -38,9 +38,9 @@ import de.hskl.ps.bluetoothinvokeexample.example.ISleeper;
  * This activity demonstrates how to use BTInvoke on the server side. It shows a Textview for Statusmessages and three Buttons for running examples.<br>
  * Examples are:
  * <ul>
- * <il> <b>Collatz</b> Length which runs {@link CollatzLength#lengthOfHailstoneSequence(long)}.
- * <il> <b>Sleep</b> which runs {@link ISleeper#sleepForSecondsAndReturn(int, double)}.
- * <il> <b>Proxy</b> which runs a created proxy instance of {@link ICollatzLength}.
+ * <li> <b>Collatz</b> Length which runs {@link CollatzLength#lengthOfHailstoneSequence(long)}.
+ * <li> <b>Sleep</b> which runs {@link ISleeper#sleepForSecondsAndReturn(int, double)}.
+ * <li> <b>Proxy</b> which runs a created proxy instance of {@link ICollatzLength}.
  * </ul>
  * <p>
  * Is using {@code @EActivity} from Android Annotations.
@@ -166,7 +166,7 @@ public class GUIActivity extends Activity {
      * <p>
      * Will create a Proxy implementation of {@link ICollatzLength} using {@link Proxy} and {@link BTInvocationHandler}.
      * Has to run in the Background since it is a blocking call.
-     * @see {@link BTInvocationHandler}
+     * @see BTInvocationHandler
      */
     @Click(R.id.BUTTON_PROXY)
     @Background
@@ -182,7 +182,7 @@ public class GUIActivity extends Activity {
      * 
      * Receives the following Message types:<br>
      * <ul>
-     * <li> {@link BTInvokeMessages#REMOTE_INVOCATION_Result}. The Message containing the result of a request.
+     * <li> {@link BTInvokeMessages#REMOTE_INVOCATION_RESULT}. The Message containing the result of a request.
      * <li> {@link BTConnectionMessages#CONNECTION_STATUS_MESSAGE}. For update the log with status messages.
      * <li> {@link BTInvokeMessages#ACTION_STATUS_MESSAGE}. For update the log with status messages.
      * </ul>

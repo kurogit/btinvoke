@@ -15,6 +15,8 @@ import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 /**
  * Handling a Bluetooth connection as a client.
  * <p>
+ * For this to work the device running the server has to be paired and bonded already.
+ * <p>
  * Uses {@link EBean} from Android Annotation for the background threads. Has to be injected with {@link Bean}.
  * @author Patrick Schwartz
  * @date 2015
