@@ -21,32 +21,54 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import de.hskl.ps.bluetoothinvokeexample.bluetooth.BTConnectionMessages;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationException;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvocationHandler;
-import de.hskl.ps.bluetoothinvokeexample.btinvocation.BTInvoke;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeMessages;
-import de.hskl.ps.bluetoothinvokeexample.constants.BTInvokeExtras;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvocationHandler;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvoke;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnectionMessages;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTInvocationException;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationResult;
+import de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvokeServerService_;
+import de.hskl.ps.bluetoothinvokeexample.example.CollatzLength;
 import de.hskl.ps.bluetoothinvokeexample.example.ICollatzLength;
-import de.hskl.ps.bluetoothinvokeexample.helper.RemoteInvocationResult;
-import de.hskl.ps.bluetoothinvokeexample.services.BTInvocationServerService_;
+import de.hskl.ps.bluetoothinvokeexample.example.ISleeper;
 
+/**
+ * Example activity which runs on the GUI device or Server device.
+ * <p>
+ * This activity demonstrates how to use BTInvoke on the server side. It shows a Textview for
+ * Statusmessages and three Buttons for running examples.<br>
+ * Examples are:
+ * <ul>
+ * <li><b>Collatz</b> Length which runs {@link CollatzLength#lengthOfHailstoneSequence(long)}.
+ * <li><b>Sleep</b> which runs {@link ISleeper#sleepForSecondsAndReturn(int, double)}.
+ * <li><b>Proxy</b> which runs a created proxy instance of {@link ICollatzLength}.
+ * </ul>
+ * <p>
+ * Is using {@code @EActivity} from Android Annotations.
+ * 
+ * @author Patrick Schwartz
+ * @date 2014
+ */
 @EActivity(R.layout.activity_gui)
 public class GUIActivity extends Activity {
 
+    /** Reference to the used {@code ListView}. */
     @ViewById(R.id.LIST_VIEW)
     ListView listView;
 
+    /** {@code ArrayAdpater} for the {@code ListView}. */
     private ArrayAdapter<String> logEntryAdapter_ = null;
 
+    /** Reference to the local broadcast manager. */
     private LocalBroadcastManager broadcast_ = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        BTInvocationServerService_.intent(this).start();
-        
+        // Start the service
+        BTInvokeServerService_.intent(this).start();
+
         broadcast_ = LocalBroadcastManager.getInstance(this);
     }
 
@@ -55,7 +77,7 @@ public class GUIActivity extends Activity {
         super.onDestroy();
 
         if(isFinishing()) {
-            BTInvocationServerService_.intent(this).stop();
+            BTInvokeServerService_.intent(this).stop();
         }
     }
 
@@ -63,6 +85,7 @@ public class GUIActivity extends Activity {
     public void onResume() {
         super.onResume();
 
+        // Register broadcast reciever
         broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTConnectionMessages.CONNECTION_STATUS_MESSAGE));
         broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvokeMessages.ACTION_STATUS_MESSAGE));
         broadcast_.registerReceiver(broadCastReciever_, new IntentFilter(BTInvokeMessages.REMOTE_INVOCATION_RESULT));
@@ -81,6 +104,14 @@ public class GUIActivity extends Activity {
         listView.setAdapter(logEntryAdapter_);
     }
 
+    /**
+     * Add entry to the shown log.
+     * <p>
+     * Guaranteed to be called on the UI thread through Android Annotations.
+     * 
+     * @param log
+     *            The message to add to the log. Will be prepended with the current time.
+     */
     @UiThread
     void addLogEntry(String log) {
         String timestamp = DateFormat.format("H:m:s", Calendar.getInstance()).toString();
@@ -91,6 +122,14 @@ public class GUIActivity extends Activity {
         logEntryAdapter_.notifyDataSetChanged();
     }
 
+    /**
+     * Run the first example.
+     * <p>
+     * Will request a run of {@link ICollatzLength#lengthOfHailstoneSequence(long)} on the remote
+     * device.
+     * <p>
+     * A Collatz sequence is also called a Hailstone sequence.
+     */
     @Click(R.id.BUTTON_COLLATZ)
     void runHailstoneExample() {
         final String exampleMethod = "lengthOfHailstoneSequence";
@@ -106,6 +145,12 @@ public class GUIActivity extends Activity {
         }
     }
 
+    /**
+     * Run the second example.
+     * <p>
+     * Will request a run of {@link ISleeper#sleepForSecondsAndReturn(int, double)} on the remote
+     * device.
+     */
     @Click(R.id.BUTTON_SLEEP)
     void runSleepExample() {
         final String exampleMethod = "sleepForSecondsAndReturn";
@@ -121,27 +166,51 @@ public class GUIActivity extends Activity {
         }
     }
 
+    /**
+     * Run the third example.
+     * <p>
+     * Will create a Proxy implementation of {@link ICollatzLength} using {@link Proxy} and
+     * {@link BTInvocationHandler}. Has to run in the Background since it is a blocking call.
+     * 
+     * @see BTInvocationHandler
+     */
     @Click(R.id.BUTTON_PROXY)
     @Background
     void proxyMethod() {
-        ICollatzLength i = (ICollatzLength) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[] { ICollatzLength.class }, new BTInvocationHandler());
+        ICollatzLength i = (ICollatzLength) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[] { ICollatzLength.class }, new BTInvocationHandler(
+                this));
         long r = i.lengthOfHailstoneSequence(1000000);
         addLogEntry("Result: " + r);
     }
-    
+
+    /**
+     * Broadcast receiver.
+     * <p>
+     * 
+     * Receives the following Message types:<br>
+     * <ul>
+     * <li> {@link BTInvokeMessages#REMOTE_INVOCATION_RESULT}. The Message containing the result of a
+     * request.
+     * <li> {@link BTConnectionMessages#CONNECTION_STATUS_MESSAGE}. For update the log with status
+     * messages.
+     * <li> {@link BTInvokeMessages#ACTION_STATUS_MESSAGE}. For update the log with status messages.
+     * </ul>
+     */
     private final BroadcastReceiver broadCastReciever_ = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(BTInvokeMessages.REMOTE_INVOCATION_RESULT)) {
-                String recievedString = intent.getStringExtra(BTInvokeExtras.JSONSTRING);
-                
+                String recievedString = intent.getStringExtra(BTInvokeMessages.Extras.JSONSTRING);
+
                 RemoteInvocationResult r = null;
                 try {
                     r = RemoteInvocationResult.fromJSONString(recievedString);
                 } catch(JSONException e) {
+                    addLogEntry("Error while recieving result");
+                    return;
                 }
-                
+
                 addLogEntry("Recieved following result: " + r.result());
             } else if(intent.getAction().equalsIgnoreCase(BTConnectionMessages.CONNECTION_STATUS_MESSAGE)) {
                 String msg = BTConnectionMessages.turnIntentToHumanReadableString(intent);

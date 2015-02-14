@@ -11,13 +11,12 @@ public class CollatzLength implements ICollatzLength {
 
         long value = startValue;
 
-        while(value != 1)
-        {
+        while(value != 1) {
             value = ((value % 2) == 0 ? value / 2 : (value * 3) + 1);
 
             ++length;
         }
-                
+
         return length;
     }
 

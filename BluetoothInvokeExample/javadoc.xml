@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc 
+	  access="private" 
+	  additionalparam="-linkoffline http://developer.android.com/reference file:/opt/android-sdk/docs/reference -link /home/patrick/FH/Master/S3/ANDROID/project/androidproject/BluetoothInvokeExample/external/androidannotations-api-3.2-javadoc" 
+	  author="true" 
+	  classpath="/opt/android-sdk/platforms/android-19/android.jar:libs/android-support-v4.jar:libs/androidannotations-api-3.2.jar" 
+	  destdir="doc" 
+	  nodeprecated="false" 
+	  nodeprecatedlist="false" 
+	  noindex="false" 
+	  nonavbar="false" 
+	  notree="false"
+	  source="1.6"
+	  sourcepath="src:gen"
+	  splitindex="true"
+	  use="true"
+	  version="true"
+	  />
+    </target>
+</project>
