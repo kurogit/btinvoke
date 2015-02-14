@@ -3,6 +3,7 @@ package de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth;
 import java.io.IOException;
 
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.api.BackgroundExecutor;
 
@@ -10,6 +11,15 @@ import android.bluetooth.BluetoothServerSocket;
 import android.content.Context;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
+/**
+ * Handling a Bluetooth connection as a server.
+ * <p>
+ * Uses {@link EBean} from Android Annotation for the background threads. Has to be injected with
+ * {@link Bean}.
+ * 
+ * @author Patrick Schwartz
+ * @date 2015
+ */
 @EBean
 public class BTServerConnection extends BTConnection {
 
@@ -17,10 +27,15 @@ public class BTServerConnection extends BTConnection {
 
     private static final String THREAD_NAME = "connect_thread";
 
+    /** Construct a new ServerConneciton Object. Context required for sending broadcasts */
     public BTServerConnection(Context c) {
         super(c);
     }
 
+    /**
+     * Accept a connection as a server. Has to be run in a background thread since accepting is a
+     * blocking operation.
+     */
     @Background(id = THREAD_NAME, serial = THREAD_NAME)
     public void acceptConnection() {
 
@@ -76,7 +91,6 @@ public class BTServerConnection extends BTConnection {
         }
     }
 
-    
     @Override
     public void doConnect() {
         acceptConnection();
@@ -86,7 +100,8 @@ public class BTServerConnection extends BTConnection {
     protected void cancelThread() {
         BackgroundExecutor.cancelAll(THREAD_NAME, true);
     }
-    
+
+    /** Report a connection failure */
     private void reportConnectionFailed() {
         reportError(BTConnectionMessages.Errors.CONNECTING_FAILED);
     }

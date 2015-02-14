@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.api.BackgroundExecutor;
 
@@ -11,17 +12,29 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 
+/**
+ * Handling a Bluetooth connection as a client.
+ * <p>
+ * Uses {@link EBean} from Android Annotation for the background threads. Has to be injected with {@link Bean}.
+ * @author Patrick Schwartz
+ * @date 2015
+ */
 @EBean
 public class BTClientConnection extends BTConnection {
 
     private static final String TAG = BTConnection.class.getSimpleName();
 
     private static final String THREAD_NAME = "connect_thread";
-
+    
+    /** Construct a new BTClientConnection object. Context required for sending broadcasts */
     public BTClientConnection(Context c) {
         super(c);
     }
-
+    
+    /**
+     * Try to connect to a bonded device. Has to be run in a background thread since connecting is a
+     * blocking operation.
+     */
     @Background(id = THREAD_NAME, serial = THREAD_NAME)
     void connectAsClient() {
 
