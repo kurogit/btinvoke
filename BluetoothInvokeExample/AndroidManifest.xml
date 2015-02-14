@@ -38,7 +38,7 @@
             android:screenOrientation="portrait" >
         </activity>
 
-        <service android:name="de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvocationServerService_" />
+        <service android:name="de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvokeServerService_" />
         <service android:name="de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvokeClientService_" />
     </application>
 

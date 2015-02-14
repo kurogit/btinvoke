@@ -22,7 +22,6 @@ import android.widget.TextView;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMethodManager;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnectionMessages;
-import de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvocationServerService_;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvokeClientService;
 import de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvokeClientService_;
 import de.hskl.ps.bluetoothinvokeexample.example.CollatzLength;
@@ -72,7 +71,7 @@ public class ComputeActivity extends Activity {
         super.onDestroy();
 
         if(isFinishing()) {
-            BTInvocationServerService_.intent(this).stop();
+            BTInvokeClientService_.intent(this).stop();
         }
     }
 
@@ -96,13 +95,14 @@ public class ComputeActivity extends Activity {
         logEntryAdapter_ = new ArrayAdapter<String>(this, R.layout.log_message);
         listView.setAdapter(logEntryAdapter_);
     }
-    
+
     /**
      * Add entry to the shown log.
      * <p>
      * Guaranteed to be called on the UI thread through Android Annotations.
      * 
-     * @param log The message to add to the log. Will be prepended with the current time.
+     * @param log
+     *            The message to add to the log. Will be prepended with the current time.
      */
     @UiThread
     void addLogEntry(String log) {
@@ -113,7 +113,7 @@ public class ComputeActivity extends Activity {
         logEntryAdapter_.add(msg);
         logEntryAdapter_.notifyDataSetChanged();
     }
-    
+
     /**
      * Try to connect to a server device.
      */
@@ -124,14 +124,15 @@ public class ComputeActivity extends Activity {
         i.setAction(BTInvokeClientService.ACTION_CONNECT);
         startService(i);
     }
-    
+
     /**
      * Used broadcast receiver.
      * <p>
      * 
      * Receives the following Message types:<br>
      * <ul>
-     * <li> {@link BTConnectionMessages#CONNECTION_STATUS_MESSAGE}. For update the log with status messages.
+     * <li> {@link BTConnectionMessages#CONNECTION_STATUS_MESSAGE}. For update the log with status
+     * messages.
      * <li> {@link BTInvokeMessages#ACTION_STATUS_MESSAGE}. For update the log with status messages.
      * </ul>
      */
