@@ -207,6 +207,8 @@ public class GUIActivity extends Activity {
                 try {
                     r = RemoteInvocationResult.fromJSONString(recievedString);
                 } catch(JSONException e) {
+                    addLogEntry("Error while recieving result");
+                    return;
                 }
 
                 addLogEntry("Recieved following result: " + r.result());
