@@ -1,0 +1,102 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+%
+\documentclass[paper=a4,fontsize=11pt,twoside=true,headings=openright,parskip=full,DIV=14,draft=false]{scrbook}
+%
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{lmodern}
+\usepackage{csquotes}
+\usepackage[ngerman]{babel}
+\usepackage[stretch=10]{microtype} % 
+\usepackage{titlesec}
+\usepackage{graphicx} % graphics
+\usepackage{enumitem}
+\usepackage{rotating}
+\usepackage[automark,autooneside,headsepline,plainheadsepline]{scrpage2} % header and footer
+\usepackage[backend=biber,
+            hyperref=true,
+            url=true,
+            backref=true,
+            style=alphabetic,
+            maxcitenames=3,
+            maxbibnames=100]{biblatex} % bibliography
+\usepackage{listings} % code
+\usepackage[draft=false]{hyperref} % standard
+\usepackage[disable,ngerman,colorinlistoftodos,obeyDraft]{todonotes} % todo
+%
+\lstset{language=Java,
+  backgroundcolor=\color[rgb]{0.95, 0.95, 0.95},
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  extendedchars=true,
+  breaklines=true,
+  frame=single,
+  commentstyle=\color{green},
+  keywordstyle=\color{red},
+  stringstyle=\color{blue},
+  basicstyle=\ttfamily,
+  moredelim=[is][\textcolor{gray}]{\%\%}{\%\%}
+}
+% Grafiken
+\graphicspath{{pictures/}}
+%
+\titlespacing{\section}{0pt}{0pt plus 2pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing{\subsection}{0pt}{0pt plus 2pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing{\subsubsection}{0pt}{0pt plus 2pt minus 2pt}{0pt plus 2pt minus 2pt}
+%
+\setlist{noitemsep}
+%
+% Tiefe für das Inhaltsverzeichnis
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+%
+% Bibliography
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+\bibliography{android}
+\AtEveryBibitem{\clearfield{note}} % clears notes
+% Header and Footer
+\pagestyle{scrheadings}
+\clearscrheadfoot
+\ohead[\pagemark]{\pagemark}
+\chead{}
+\ihead{\headmark}
+\ofoot{}%\mytitle}
+\cfoot{}
+\ifoot{}%\myauthor}
+%
+\newcommand{\mytitle}{Mobile Anwendungen mit Android WS 14/15}
+\newcommand{\mysubtitle}{BTInvoke: Ausführen von Java Methoden über Bluetooth}
+\newcommand{\myauthor}{Patrick Schwartz}
+%
+\begin{document}
+  \frontmatter
+  \include{chapters/title}
+  %
+  \pdfbookmark{\contentsname}{toc}
+  \tableofcontents
+  %
+  \todototoc
+  \listoftodos
+  %
+  \mainmatter
+  \include{chapters/einleitung}
+  \include{chapters/project}
+  \include{chapters/impl}
+  \include{chapters/tutorial}
+  \include{chapters/fazit}
+  %
+  \appendix
+  \chapter{Anlagen}
+  Bei diesem Dokument sollte sich zusätzlich noch eine Daten-CD befinden.
+  \backmatter
+  %
+  \phantomsection
+  \addcontentsline{toc}{chapter}{Quellen}
+  \printbibliography[title={Quellen}]
+  %
+\end{document}

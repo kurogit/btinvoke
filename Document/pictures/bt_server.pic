@@ -1,0 +1,48 @@
+.PS
+copy "sequence.pic";
+
+boxwid = 1.5;
+underline = 0;
+
+# Define the objects
+object(A, "Android System");
+object(S,"BTInvokeServerService");
+object(B, "BTServerConnection");
+object(BA, "BluetoothAdapter")
+step();
+
+# Message sequences
+active(A);
+message(A,S, "onCreate()");
+active(S);
+message(S,B,"connect()");
+active(B);
+
+async();
+message(B,B,"doConnect()");
+sync();
+
+inactive(S);
+inactive(A);
+
+active(B);
+message(B,BA, "accept()");
+active(BA);
+step();
+rmessage(BA,B,"connected Socket");
+comment(BA,,left .2 down .5,wid 1.7 ht 0.3 "Blocks until connection"\
+ "is open");
+inactive(BA);
+inactive(B);
+
+step();
+inactive(B);
+
+# Complete the lifelines
+step();
+complete(A);
+complete(S);
+complete(B);
+complete(BA);
+
+.PE
