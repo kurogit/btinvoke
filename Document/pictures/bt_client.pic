@@ -1,0 +1,56 @@
+.PS
+copy "sequence.pic";
+
+boxwid = 1.5;
+underline = 0;
+
+# Define the objects
+object(A, "Android System");
+object(S,"BTInvokeClientService");
+object(B, "BTClientConnection");
+object(BA, "BluetoothSocket")
+step();
+
+active(A);
+message(A,S,"onCreate()");
+active(S);
+
+step();
+
+inactive(S);
+inactive(A);
+
+step();
+
+active(A);
+message(A,S,"onStartCommand(ACTION_CONNECT)");
+active(S);
+message(S,B,"connect()");
+active(B);
+
+async();
+message(B,B,"doConnect()");
+sync();
+
+inactive(S);
+inactive(A);
+
+active(B);
+message(B,BA, "connect()");
+active(BA);
+step();
+comment(BA,,left .2 down .5,wid 1.8 ht 0.5 "Blocks until connection"\
+ "is open or a timeout"\
+ "happened");
+rmessage(BA,B,"connetion open/timeout");
+inactive(BA);
+inactive(B);
+
+# Complete the lifelines
+step();
+complete(A);
+complete(S);
+complete(B);
+complete(BA);
+
+.PE

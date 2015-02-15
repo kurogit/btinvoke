@@ -1,0 +1,37 @@
+\chapter{Fazit und Ausblick}\label{chap:fazit}
+%
+Dieses Kapitel enthält ein \nameref{sec:fazit} zum Projekt sowie \nameref{sec:ve}.
+%
+\section{Fazit}\label{sec:fazit}
+%
+Im Rahmen dieses Projektes wurde ein Framework, oder zumindest ein Proof-Of-Concept, entwickelt, das es erlaubt Methoden auf externen Androidgeräten auszuführen und das Ergebnis zurück zu bekommen.
+
+% Wiederholung was wurde hier implementiert
+% Was habe ich gelernt
+Der Autor konnte in diesem Projekt einiges an Erfahrung in der Android Programmierung gewinnen. Speziell in den folgenden Bereichen konnte wurde viel Wissen angeeignet:
+\begin{itemize}
+  \item Services
+  \item Activity/Service Lebenszyklus
+  \item Broadcasts und BroadcastReciever
+  \item Android Bluetooth API
+\end{itemize}
+
+% Ausblick/ Zukünftige Arbeit / Verbesserungen
+\section{Verbesserungsmöglichkeiten und Erweiterungen}\label{sec:ve}
+%
+Im Nachhinein wurden noch einige Verbesserungsmöglichkeiten identifiziert. Diese konnten aus Zeitgründen nicht mehr umgesetzt werden.
+
+In der aktuellen Version existieren leider immer noch Situationen in denen von dem Clientgerät nie eine Antwort geschickt wird. Dies führt auf der Serverseite dazu das Threads, bis zum Prozessende, nie beendet werden. Hier sollte am Besten ein Timeout verwendet werden.
+
+Die Serverseite erlaubt keine Neuverbindung falls diese zusammengebrochen ist. Hier müsste einfach bei einem \emph{Disconnect}-Event die entsprechende Methode aufgerufen werden.
+
+Die Lösung zur Narichtenverteilung mit Broadcasts ist unschön. Es sind viele Konstanten notwendig die anzeigen um welche Art von Nachricht es sich handelt, welche weiteren Informationen in ihr stecken usw. Auch andere Standard Möglichkeiten von Android wie die Klassen \lstinline{Messager} und \lstinline{Handler} bieten kein zufriedenstellendes Interface. Hier sollte am besten auf eine Frembibliothek wie \emph{EventBus}~\cite{greenrobot2015} oder \emph{Otto}~\cite{Square2013} zurückgegriffen werden, die es erlauben eigene Klassen für die Eventarten zu schreiben. Dies ist wesentlich sicherer als das Hantieren mit Strings und Integern.
+
+Der Code ist an vielen stellen noch nicht hundertprozentig sauber. Die Services haben beispielsweise mehrere Verantwortungen und sollten weiter Refaktoriert werden.
+
+Auch mögliche Erweiterungen wurden identifiziert:
+
+Aktuell sind nur Methoden aufrufbar, die: nicht überladen sind; nicht doppelt existieren und die nur primitive Typen und String verwenden. Dies ist ein offensichtlicher Punkt der verbesserungswürdig ist. Um Methoden mit gleichem Namen unterscheiden zu können müssen Zusätzlich die deklarierten Datentypen betrachtet werden. Diese könnten z.~B. als String mitgesendet werden und dann mit \lstinline{Class.forName()} wieder hergestellt werden. Hier müssen jedoch Dinge wie Autoboxing und die Unterscheidung zwischen \lstinline{int} und \lstinline{long} sowie \lstinline{double} und \lstinline{float} besonders betrachtet werden. Für das übertragen von eigenen Klassen als Parameter könnte \emph{GSON}~\cite{GoogleInc2014} verwendet werden.
+
+Interessant wäre auch die Möglichkeit mehrere Clientgeräte zu verbinden. Anfragen müssten somit auf diese verteilt werden.
+%

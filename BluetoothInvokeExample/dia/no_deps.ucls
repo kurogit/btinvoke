@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.6" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true">  
+  <class id="1" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTServerConnection" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/BTServerConnection.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="146" y="418"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnectionMessages" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/BTConnectionMessages.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="424" y="265"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTClientConnection" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/BTClientConnection.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="423" y="418"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnection" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/BTConnection.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="423" y="319"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <enumeration id="5" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.ConnectionStatus" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/ConnectionStatus.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="700" y="418"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </enumeration>  
+  <class id="6" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.bluetooth.BTConnectionParameters" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/bluetooth/BTConnectionParameters.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="684" y="262"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTInvocationException" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/exceptions/BTInvocationException.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="49" width="244" x="41" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.BTConnectionException" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/exceptions/BTConnectionException.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="163" y="173"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.exceptions.MethodCallException" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/exceptions/MethodCallException.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="162" y="117"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationResult" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/helper/RemoteInvocationResult.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="415" y="62"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="11" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.helper.RemoteInvocationRequest" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/helper/RemoteInvocationRequest.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="416" y="117"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvocationHandler" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/BTInvocationHandler.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="937" y="48"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvoke" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/BTInvoke.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="940" y="181"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="14" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMessages" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/BTInvokeMessages.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="938" y="255"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="15" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.BTInvokeMethodManager" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/BTInvokeMethodManager.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="938" y="115"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="16" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvokeClientService" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/services/BTInvokeClientService.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="423" y="510"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="17" language="java" name="de.hskl.ps.bluetoothinvokeexample.btinvoke.services.BTInvokeServerService" 
+    project="BluetoothInvokeExample" 
+    file="/BluetoothInvokeExample/src/de/hskl/ps/bluetoothinvokeexample/btinvoke/services/BTInvokeServerService.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="148" y="508"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <generalization id="18">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <association id="19">    
+    <end type="SOURCE" refId="15" navigable="false">      
+      <attribute id="20" name="instance_"/>      
+      <multiplicity id="21" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="15" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="22">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="23" name="status_"/>      
+      <multiplicity id="24" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="25">    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="26" name="connection_"/>      
+      <multiplicity id="27" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="28">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <association id="29">    
+    <end type="SOURCE" refId="17" navigable="false">      
+      <attribute id="30" name="connection_"/>      
+      <multiplicity id="31" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false" static="true"/>    
+    <operations public="false" package="false" protected="false" private="false" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

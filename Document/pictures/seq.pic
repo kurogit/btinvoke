@@ -1,0 +1,56 @@
+.PS
+copy "sequence.pic";
+
+boxwid = 1.7;
+underline = 0;
+maxpswid = 30;
+
+# Objects
+object(A,"GUIActivity");
+object(B,"BTInvoke");
+object(SS,"BTInvokeServerService");
+object(CS,"BTInvokeClientService");
+object(M,"BTInvokeMethodManager");
+step();
+
+active(A);
+  message(A,B,"remoteExecute()");
+  active(B);
+    async();
+    message(B,SS,"REMOTE_INVOCATION");
+    sync();
+  inactive(B);
+inactive(A);
+
+active(SS);
+  step();
+  message(SS,SS,"sendStringAndWaitForAnswer()");
+  active(SS);
+    message(SS,CS,"Send String over BT");
+    active(CS);
+      message(CS,M,"callMethod()");
+      active(M);
+	step();
+	rmessage(M,CS,"Result");
+      inactive(M);
+      message(CS,SS, "Send String over BT");
+    inactive(CS);
+    async();
+    message(SS,A,"REMOTE_INVOCATION_RESULT");
+    sync();
+  inactive(SS);
+inactive(SS);
+
+active(A);
+step();
+inactive(A);
+
+# Complete
+step();
+complete(A);
+complete(B);
+complete(SS);
+complete(CS);
+complete(M);
+
+.PE

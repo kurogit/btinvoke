@@ -1,15 +1,46 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="de.hskl.ps.bluetoothinvokeexample.GUIActivity"
     tools:ignore="MergeRootFrame" >
 
-    <fragment
-        android:id="@+id/fragment1"
-        android:name="de.hskl.ps.bluetoothinvokeexample.fragments.GUIFragment_"
+    <ListView
+        android:id="@+id/LIST_VIEW"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_gravity="top"
+        android:layout_weight="1"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll" >
+    </ListView>
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/BUTTON_COLLATZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/BUTTON_HAILSTONE" />
+
+        <Button
+            android:id="@+id/BUTTON_SLEEP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/BUTTON_SLEEP" />
+
+        <Button
+            android:id="@+id/BUTTON_PROXY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/BUTTON_PROXY" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -8,8 +8,9 @@
     <string name="BUTTON_COMPUTE_DEVICE">Compute device</string>
     <string name="BUTTON_GUI_DEVICE">GUI device</string>
     <string name="title_activity_compute">ComputeActivity</string>
-    <string name="BUTTON_REMOTE">Run remote</string>
-    <string name="BUTTON_LOCAL">Run local</string>
+    <string name="BUTTON_HAILSTONE">Run Hailstone example</string>
+    <string name="BUTTON_SLEEP">Run Sleep example</string>
+    <string name="BUTTON_PROXY">Run Proxy example</string>
     <string name="BUTTON_CONNECT">Connect</string>
 
 </resources>
