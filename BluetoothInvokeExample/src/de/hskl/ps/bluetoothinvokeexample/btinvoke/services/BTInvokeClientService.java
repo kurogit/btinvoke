@@ -30,6 +30,8 @@ import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 /**
  * Service for BTInvoke on the client side.
  * <p>
+ * Can only be started. Binding is not allowed.
+ * <p>
  * Will not immediately try to connect. Use {@link Activity#startService(Intent)} with an
  * {@link Intent} containing the {@link BTInvokeClientService#ACTION_CONNECT} action. Then it
  * listens for the broadcast with the {@link BTConnectionMessages#CONNECTION_STATUS_MESSAGE} action

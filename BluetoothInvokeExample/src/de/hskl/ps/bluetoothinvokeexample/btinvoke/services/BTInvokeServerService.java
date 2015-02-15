@@ -20,6 +20,8 @@ import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
 /**
  * Service for BTInvoke on the server side.
  * <p>
+ * Can only be started. Binding is not allowed.
+ * <p>
  * Listens for the {@link BTInvokeMessages#REMOTE_INVOCATION} broadcast action. If the broadcast is
  * Received the JSON String will be send over Bluetooth to the client device. It then waits for the
  * answer of the client device and sends a {@link BTInvokeMessages#REMOTE_INVOCATION_RESULT}
