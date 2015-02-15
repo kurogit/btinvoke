@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,9 +23,13 @@ import de.hskl.ps.bluetoothinvokeexample.util.BetterLog;
  * <ul>
  * <li> {@link BluetoothAdapter#ACTION_STATE_CHANGED}
  * </ul>
- * Will send connection status broadcasts with the {@link BTConnectionMessages#CONNECTION_STATUS_MESSAGE}
- * action. See {@link BTConnectionMessages.Errors} and {@link ConnectionStatus} for possible types
- * of status messages.
+ * Will send connection status broadcasts with the
+ * {@link BTConnectionMessages#CONNECTION_STATUS_MESSAGE} action. See
+ * {@link BTConnectionMessages.Errors} and {@link ConnectionStatus} for possible types of status
+ * messages. While there already are Status messages such as
+ * {@link BluetoothAdapter#ACTION_STATE_CHANGED} or {@link BluetoothDevice#ACTION_ACL_CONNECTED},
+ * these are global messages and would also be send if a other App is using Bluetooth. The messages
+ * send by this class are local to the Application.
  * 
  * @author Patrick Schwartz
  * @date 2014
@@ -37,17 +42,17 @@ public abstract class BTConnection {
     protected BluetoothSocket socket_ = null;
     protected InputStream readStream_ = null;
     protected OutputStream writeStream_ = null;
-    
+
     /** The current connection status */
     private ConnectionStatus status_ = ConnectionStatus.DISABLED;
-    
+
     /** Buffer for reading */
     private byte[] readBuffer_ = null;
 
     private Context context_ = null;
     /** Reference to the {@code LocalBroadcastManager} */
     private LocalBroadcastManager broadcast_ = null;
-    
+
     /**
      * Create a new BTConnection Object. Context required for sending and receiving broadcasts.
      */
@@ -66,14 +71,14 @@ public abstract class BTConnection {
 
         readBuffer_ = new byte[512];
     }
-    
+
     /** Cleanup all Resources of this Connection */
     public void destroy() {
         cancelConnection();
         cancelThread();
         context_.unregisterReceiver(broadcastReciever_);
     }
-    
+
     /** Connect to a bonded device */
     public void connect() {
         if(status() == ConnectionStatus.DISABLED) {
@@ -91,11 +96,14 @@ public abstract class BTConnection {
         // Let subclass handle the rest
         doConnect();
     }
-    
+
     /**
      * Send a String over the connection.
-     * @param s The String to send.
-     * @throws BTConnectionException if there was an error sending the String.
+     * 
+     * @param s
+     *            The String to send.
+     * @throws BTConnectionException
+     *             if there was an error sending the String.
      */
     public void writeString(String s) throws BTConnectionException {
         if(status_ != ConnectionStatus.CONNECTED) {
@@ -112,11 +120,13 @@ public abstract class BTConnection {
             throw new BTConnectionException("Socket was closed", e);
         }
     }
-    
+
     /**
      * Read a String over the connection. Will block until a String arrives.
+     * 
      * @return The read String
-     * @throws BTConnectionException BTConnectionException if there was an error receiving the String.
+     * @throws BTConnectionException
+     *             BTConnectionException if there was an error receiving the String.
      * @see InputStream#read()
      */
     public String readString() throws BTConnectionException {
@@ -137,16 +147,17 @@ public abstract class BTConnection {
             throw new BTConnectionException("Socket was closed", e);
         }
     }
+
     /** Is a connection present */
     public boolean isConnected() {
         return status_ == ConnectionStatus.CONNECTED;
     }
-    
+
     /** Returns the current connection status */
     protected ConnectionStatus status() {
         return status_;
     }
-    
+
     /** Cancel a current connection */
     protected void cancelConnection() {
         if(socket_ != null) {
@@ -161,8 +172,8 @@ public abstract class BTConnection {
         }
         changeStatus(ConnectionStatus.NOT_CONNECTED);
     }
-    
-    /** Change connection status. Will send a status broadcast. */ 
+
+    /** Change connection status. Will send a status broadcast. */
     protected void changeStatus(ConnectionStatus newStatus) {
         Intent i = new Intent(BTConnectionMessages.CONNECTION_STATUS_MESSAGE);
         i.putExtra(BTConnectionMessages.EXTRA_TYPE, newStatus.ordinal());
@@ -175,7 +186,7 @@ public abstract class BTConnection {
 
         status_ = newStatus;
     }
-    
+
     /** Report an Connection error. Will send a broadcast. */
     protected void reportError(final int errorType) {
         Intent i = new Intent(BTConnectionMessages.CONNECTION_STATUS_MESSAGE);
@@ -183,14 +194,14 @@ public abstract class BTConnection {
 
         broadcast_.sendBroadcast(i);
     }
-    
+
     /** Cancel the thread used for connecting. */
     protected abstract void cancelThread();
-    
+
     /** Sstart the connection process */
     protected abstract void doConnect();
-    
-    /** {@code BroadcastReceiver} for handling adapter state.*/
+
+    /** {@code BroadcastReceiver} for handling adapter state. */
     private final BroadcastReceiver broadcastReciever_ = new BroadcastReceiver() {
 
         @Override
