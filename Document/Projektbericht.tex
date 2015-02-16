@@ -1,6 +1,6 @@
 \RequirePackage[l2tabu, orthodox]{nag}
 %
-\documentclass[paper=a4,fontsize=11pt,twoside=true,headings=openright,parskip=full,DIV=14,draft=false]{scrbook}
+\documentclass[paper=a4,fontsize=12pt,twoside=true,headings=openright,parskip=full,DIV=14,draft=false]{scrbook}
 %
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -11,6 +11,7 @@
 \usepackage[stretch=10]{microtype} % 
 \usepackage{titlesec}
 \usepackage{graphicx} % graphics
+\usepackage{float}
 \usepackage{enumitem}
 \usepackage{rotating}
 \usepackage[automark,autooneside,headsepline,plainheadsepline]{scrpage2} % header and footer
@@ -75,8 +76,11 @@
 %
 \begin{document}
   \frontmatter
+  \KOMAoptions{fontsize=11pt}
   \include{chapters/title}
+  \KOMAoptions{fontsize=12pt}
   %
+  \cleardoublepage
   \pdfbookmark{\contentsname}{toc}
   \tableofcontents
   %
@@ -91,8 +95,8 @@
   \include{chapters/fazit}
   %
   \appendix
-  \chapter{Anlagen}
-  Bei diesem Dokument sollte sich zusätzlich noch eine Daten-CD befinden.
+  %\chapter{Anlagen}
+  %Bei diesem Dokument sollte sich zusätzlich noch eine Daten-CD befinden.
   \backmatter
   %
   \phantomsection
